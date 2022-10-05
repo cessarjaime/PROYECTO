@@ -1,0 +1,7 @@
+R3234,Juan,25,hombre,Puerto Madryn,
+B3434,Marcos,34,hombre,trelew,
+C5238,Lucas,20,hombre,Comodoro Rivadavia,
+K5338,Maria,26,Mujer,Puerto Madryn,
+T8744,Ana,19,mujer,Rawson,
+P2911,Luis,44,hombre,Sarmiento,
+D5487,Micaela,29,Mujer,Trelew,
