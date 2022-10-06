@@ -32,7 +32,7 @@ public class Interfaz {
 	public void mostrarCaminoMasNuevo(List<Usuario> list) {
 		
 		System.out.print("El camino mas nuevo entre "
-       +list.get(0).getNombre()+" Y "+list.get(list.size()-1).getNombre()+" es:");
+       +list.get(0).getNombre()+" Y "+list.get(list.size()-1).getNombre()+" es:\n");
 		
 		for (Usuario u: list)
 			System.out.println(u);	
