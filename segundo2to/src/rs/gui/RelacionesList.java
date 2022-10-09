@@ -26,8 +26,6 @@ public class RelacionesList extends JDialog {
 
 	private Coordinador coordinador;
 	private int accion;
-	
-	
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
 	private JTable tableEmpleadoAsalariado;
