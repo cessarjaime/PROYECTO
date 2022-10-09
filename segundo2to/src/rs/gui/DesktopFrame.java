@@ -18,10 +18,10 @@ public class DesktopFrame extends JFrame {
 
 	private Coordinador coordinador;
 	private JPanel contentPane;
-	JMenuItem mntmNewMenuItem_1;
-	JMenuItem mntmNewMenuItem_2;
-	JMenuItem mntmNewMenuItem1;
-	JMenuItem mntmNewMenuItem2;
+	private JMenuItem mntmNewMenuItem_1;
+	private JMenuItem mntmNewMenuItem_2;
+	private JMenuItem mntmNewMenuItem1;
+	private JMenuItem mntmNewMenuItem2;
 
 	public DesktopFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
