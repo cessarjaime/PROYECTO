@@ -1,5 +1,6 @@
 package rs.modelo;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Relacion {
@@ -8,15 +9,15 @@ public class Relacion {
 	private Usuario usuario2;
 	private int interaccion;
 	private int likes;
-	private int tiempoAmistad;
+	private LocalDate fechaAmistad;
 	
-	public Relacion(Usuario usuario1, Usuario usuario2, int interaccion, int likes, int tiempoAmistad) {
+	public Relacion(Usuario usuario1, Usuario usuario2, int interaccion, int likes,LocalDate fechaAmistad) {
 		super();
 		this.usuario1 = usuario1;
 		this.usuario2 = usuario2;
 		this.interaccion = interaccion;
 		this.likes = likes;
-		this.tiempoAmistad = tiempoAmistad;
+		this.fechaAmistad = fechaAmistad;
 	}
 
 	public Usuario getUsuario1() {
@@ -50,19 +51,26 @@ public class Relacion {
 	public void setLikes(int likes) {
 		this.likes = likes;
 	}
-
-	public int getTiempoAmistad() {
-		return tiempoAmistad;
+	
+	public LocalDate getFechaAmistad() {
+		return fechaAmistad;
 	}
 
-	public void setTiempoAmistad(int tiempoAmistad) {
-		this.tiempoAmistad = tiempoAmistad;
+	public int getTiempoAmistad() {
+		
+		int anios = LocalDate.now().getYear() - fechaAmistad.getYear();
+		int meses = LocalDate.now().getMonthValue() - fechaAmistad.getMonthValue();
+		int dias = LocalDate.now().getDayOfMonth() - fechaAmistad.getDayOfMonth();
+		if (meses < 0 || (meses == 0 && dias < 0)) {
+			anios--;
+		}
+		return anios;
 	}
 
 	@Override
 	public String toString() {
 		return "Relacion ["+ usuario1 + " " + usuario2 + " " + interaccion + " "
-				+ likes + " " + tiempoAmistad + "]";
+				+ likes + " " + getTiempoAmistad() + "]";
 	}
 
 	@Override

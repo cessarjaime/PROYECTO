@@ -1,22 +1,30 @@
 package rs.modelo;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Usuario {
 
 	private String id;
 	private String nombre;
-	private int edad;
-	private String genero;
+	private LocalDate fechaNacimiento;
+	private Gender genero;
 	private String ciudad;
+	private String estadoCivil;
+	private String nivelAcademico;
 
-	public Usuario(String id, String nombre, int edad, String genero, String ciudad) {
+
+
+	public Usuario(String id, String nombre, Gender genero, String ciudad,LocalDate fechaNacimiento,
+			String estadoCivil, String nivelAcademico) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.edad = edad;
 		this.genero = genero;
 		this.ciudad = ciudad;
+		this.fechaNacimiento = fechaNacimiento;
+		this.estadoCivil = estadoCivil;
+		this.nivelAcademico = nivelAcademico;
 	}
 
 	public String getNombre() {
@@ -36,18 +44,25 @@ public class Usuario {
 	}
 
 	public int getEdad() {
-		return edad;
+		int anios = LocalDate.now().getYear() - fechaNacimiento.getYear();
+		int meses = LocalDate.now().getMonthValue() - fechaNacimiento.getMonthValue();
+		int dias = LocalDate.now().getDayOfMonth() - fechaNacimiento.getDayOfMonth();
+		if (meses < 0 || (meses == 0 && dias < 0)) {
+			anios--;
+		}
+		return anios;
 	}
 
-	public void setEdad(int edad) {
-		this.edad = edad;
+	
+	public enum genero {
+		hombre, mujer;
 	}
 
-	public String getGenero() {
+	public Gender getGenero() {
 		return genero;
 	}
 
-	public void setGenero(String genero) {
+	public void setGenero(Gender genero) {
 		this.genero = genero;
 	}
 
@@ -58,9 +73,31 @@ public class Usuario {
 	public void setCiudad(String ciudad) {
 		this.ciudad = ciudad;
 	}
-
-
     
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+
+	public String getEstadoCivil() {
+		return estadoCivil;
+	}
+
+	public void setEstadoCivil(String estadoCivil) {
+		this.estadoCivil = estadoCivil;
+	}
+
+	public String getNivelAcademico() {
+		return nivelAcademico;
+	}
+
+	public void setNivelAcademico(String nivelAcademico) {
+		this.nivelAcademico = nivelAcademico;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -80,8 +117,9 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + ", edad=" + edad + ", genero=" + genero + ", ciudad="
-				+ ciudad + "]";
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", fechaNacimiento=" + fechaNacimiento + ", edad="
+				+ getEdad() + ", genero=" + genero.getGenero() + ", ciudad=" + ciudad + ", estadoCivil=" + estadoCivil
+				+ ", nivelAcademico=" + nivelAcademico + "]";
 	}
 
 }

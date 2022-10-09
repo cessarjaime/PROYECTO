@@ -2,21 +2,38 @@ package rs.aplicacion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.List;
 
 import net.datastructures.TreeMap;
 import rs.datos.CargarParametros;
 import rs.datos.Dato;
-import rs.interfaz.Interfaz;
+import rs.gui.DesktopFrame;
+import rs.gui.RelacionesForm;
+import rs.gui.RelacionesList;
+import rs.gui.UsuariosForm;
+import rs.gui.UsuariosList;
 import rs.logica.Calculo;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
 
 public class Aplicacion {
 
-	public static void main(String[] args) {
+	private Coordinador coordinador;
+    private Calculo calculo;
+	private Dato dato;
+	private DesktopFrame desktopFrame;
+	private UsuariosForm usuariosForm;
+	private UsuariosList usuariosList;
+	private RelacionesForm relacionesForm;
+	private RelacionesList relacionesList;
 
+	public static void main(String[] args) {
+		Aplicacion miAplicacion = new Aplicacion();
+		miAplicacion.iniciar();
+
+	}
+
+	private void iniciar() {
 		// Cargar parametros
 		try {
 			CargarParametros.parametros();
@@ -39,36 +56,32 @@ public class Aplicacion {
 			System.exit(-1);
 		}
 
-		Calculo calculo = new Calculo(usuarios, relaciones);
-		Interfaz interfaz = new Interfaz(usuarios);
+		calculo = new Calculo(usuarios, relaciones);
 
-		mostrarInterfaz(calculo, interfaz);
+		coordinador = new Coordinador();
+		dato = new Dato(CargarParametros.getArchivoUsuario(), CargarParametros.getArchivoRelacion());
+		desktopFrame = new DesktopFrame();
+		usuariosForm = new UsuariosForm();
+		usuariosList = new UsuariosList();
+		relacionesForm = new RelacionesForm();
+		relacionesList = new RelacionesList();
+		
+		desktopFrame.setCoordinador(coordinador);
+		usuariosForm.setCoordinador(coordinador);
+		usuariosList.setCoordinador(coordinador);
+		relacionesForm.setCoordinador(coordinador);
+		relacionesList.setCoordinador(coordinador);
+		
+		coordinador.setCalculo(calculo);
+		coordinador.setDato(dato);
+		coordinador.setDesktopFrame(desktopFrame);
+		coordinador.setUsuariosForm(usuariosForm);
+		coordinador.setUsuariosList(usuariosList);
+		coordinador.setRelacionesForm(relacionesForm);
+		coordinador.setRelacionesList(relacionesList);
+		
+		desktopFrame.setVisible(true);
 
 	}
 
-	private static void mostrarInterfaz(Calculo calculo, Interfaz interfaz) {
-		
-		switch (interfaz.menu()) {
-		case 1:
-			interfaz.mostrarGradoPromedio(calculo.gradoPromedio());
-			break;
-		case 2:
-			interfaz.mostrarMasInfluyentes(calculo.masInfluyentes());
-			break;
-		case 3:
-			interfaz.getUsuarios();
-			List<String> ids = interfaz.elegirUsuarios();
-			try {
-			interfaz.mostrarCaminoMasNuevo(calculo.caminoMasNuevo(ids.get(0),ids.get(1)));
-			} catch (IllegalArgumentException e) {
-				System.out.println("Error al cargar los nombres");
-			}
-			break;
-			}
-		
-
-      if(interfaz.continuar()==1) 	  
-    	  mostrarInterfaz(calculo,interfaz);
-     
-	}
 }
