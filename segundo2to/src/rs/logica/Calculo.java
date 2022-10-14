@@ -63,26 +63,24 @@ public class Calculo {
 		}
 
 		for (List<Usuario> list : mapInf.values())
-			for (Usuario usuario : list)
+			for (Usuario usuario : list )
 				influyentes.add(0, usuario);
 
 		return influyentes;
 	}
 
-	public List<Usuario> caminoMasNuevo(String id, String id1) throws IllegalArgumentException {
+	public List<Usuario> caminoMasNuevo(String id, String id1)  {
 		Graph<Usuario, Integer> g = new AdjacencyMapGraph<>(false);
+		TreeMap<String, Vertex<Usuario>> verticesC=new TreeMap<>();
 
 		for (Entry<String, Vertex<Usuario>> usr : vertices.entrySet())
-			vertices.put(usr.getKey(), g.insertVertex(usr.getValue().getElement()));
+			verticesC.put(usr.getKey(), g.insertVertex(usr.getValue().getElement()));
 
 		for (Relacion rel : arcos)
-			g.insertEdge(vertices.get(rel.getUsuario1().getId()), vertices.get(rel.getUsuario2().getId()),
+			g.insertEdge(verticesC.get(rel.getUsuario1().getId()), verticesC.get(rel.getUsuario2().getId()),
 					rel.getTiempoAmistad());
 
-		if (vertices.get(id) == null || vertices.get(id1) == null)
-			throw new IllegalArgumentException();
-
-		PositionalList<Vertex<Usuario>> c = GraphAlgorithms.shortestPathList(g, vertices.get(id), vertices.get(id1));
+		PositionalList<Vertex<Usuario>> c = GraphAlgorithms.shortestPathList(g, verticesC.get(id), verticesC.get(id1));
 
 		List<Usuario> camino = new ArrayList<>(c.size());
 		for (Vertex<Usuario> v : c)
@@ -94,6 +92,8 @@ public class Calculo {
 
 	public int tiempoDeAmistad(Usuario u1, Usuario u2) {
 		Edge<Relacion> arcoAmistad = redSocial.getEdge(vertices.get(u1.getId()), vertices.get(u2.getId()));
+		if(arcoAmistad==null)
+			return 0;
 		Relacion amistad = arcoAmistad.getElement();
 		return amistad.getTiempoAmistad();
 	}
@@ -101,6 +101,7 @@ public class Calculo {
 	public List<Usuario> amigosDe(Usuario u) {
 		List<Usuario> amigos = new ArrayList<Usuario>();
 		Vertex<Usuario> v = vertices.get(u.getId());
+
 		for (Edge<Relacion> r : redSocial.incomingEdges(v)) {
 			if (u.equals(r.getElement().getUsuario1())) {
 				amigos.add(r.getElement().getUsuario2());

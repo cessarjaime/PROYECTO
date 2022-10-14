@@ -40,8 +40,6 @@ public class RelacionesForm extends JDialog {
 	private JLabel lblErrorTiempo;
 
 	private JButton btnInsertar;
-	private JButton btnModificar;
-	private JButton btnBorrar;
 	private JButton btnCancelar;
 	private JButton btnConsultar;
 
@@ -49,83 +47,85 @@ public class RelacionesForm extends JDialog {
 	 * Create the frame.
 	 */
 	public RelacionesForm() {
-		setBounds(100, 100, 662, 300);
+		setBounds(450, 150, 662, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblId1 = new JLabel("Id1:");
-		lblId1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel lblId1 = new JLabel("Id usuario 1:");
+		lblId1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblId1.setBounds(42, 24, 107, 14);
 		contentPane.add(lblId1);
 
 		jtfId1 = new JTextField();
-		jtfId1.setBounds(159, 24, 86, 20);
+		jtfId1.setBounds(170, 24, 86, 20);
 		contentPane.add(jtfId1);
 		jtfId1.setColumns(10);
 
-		JLabel lblId2 = new JLabel("Id2:");
-		lblId2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel lblId2 = new JLabel("Id usuario 2:");
+		lblId2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblId2.setBounds(42, 55, 107, 14);
 		contentPane.add(lblId2);
 
 		jtfId2 = new JTextField();
-		jtfId2.setBounds(159, 55, 86, 20);
+		jtfId2.setBounds(170, 55, 86, 20);
 		contentPane.add(jtfId2);
 		jtfId2.setColumns(10);
 
 		JLabel lblInterracion = new JLabel("Interracion diaria:");
-		lblInterracion.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblInterracion.setBounds(42, 89, 107, 14);
+		lblInterracion.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblInterracion.setBounds(42, 89,120, 14);
 		contentPane.add(lblInterracion);
 
 		jtfInteraccion = new JTextField();
-		jtfInteraccion.setBounds(159, 86, 86, 20);
+		jtfInteraccion.setBounds(170, 86, 86, 20);
 		contentPane.add(jtfInteraccion);
 		jtfInteraccion.setColumns(10);
 
 		JLabel lblLikes = new JLabel("Cantidad de Likes:");
-		lblLikes.setBounds(42, 120, 107, 14);
+		lblLikes.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblLikes.setBounds(42, 120, 120, 14);
 		contentPane.add(lblLikes);
 
 		jtfLikes = new JTextField();
 		jtfLikes.setColumns(10);
-		jtfLikes.setBounds(159, 117, 86, 20);
+		jtfLikes.setBounds(170, 117, 86, 20);
 		contentPane.add(jtfLikes);
 
 		JLabel lblTiempo = new JLabel("Fecha de amistad:");
-		lblTiempo.setBounds(42, 151, 107, 14);
+		lblTiempo.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblTiempo.setBounds(42, 151, 120, 14);
 		contentPane.add(lblTiempo);
 
 		jtfTiempo = new JTextField();
 		jtfTiempo.setColumns(10);
-		jtfTiempo.setBounds(159, 148, 86, 20);
+		jtfTiempo.setBounds(170, 148, 86, 20);
 		contentPane.add(jtfTiempo);
 
 		lblErrorId1 = new JLabel("");
 		lblErrorId1.setForeground(Color.RED);
-		lblErrorId1.setBounds(255, 24, 300, 14);
+		lblErrorId1.setBounds(266, 24, 300, 14);
 		contentPane.add(lblErrorId1);
 
 		lblErrorId2 = new JLabel("");
 		lblErrorId2.setForeground(Color.RED);
-		lblErrorId2.setBounds(255, 55, 300, 14);
+		lblErrorId2.setBounds(266, 55, 300, 14);
 		contentPane.add(lblErrorId2);
 
 		lblErrorInteraccion = new JLabel("");
 		lblErrorInteraccion.setForeground(Color.RED);
-		lblErrorInteraccion.setBounds(255, 89, 300, 14);
+		lblErrorInteraccion.setBounds(266, 89, 300, 14);
 		contentPane.add(lblErrorInteraccion);
 
 		lblErrorLikes = new JLabel("");
 		lblErrorLikes.setForeground(Color.RED);
-		lblErrorLikes.setBounds(255, 120, 300, 14);
+		lblErrorLikes.setBounds(266, 120, 300, 14);
 		contentPane.add(lblErrorLikes);
 
 		lblErrorTiempo = new JLabel("");
 		lblErrorTiempo.setForeground(Color.RED);
-		lblErrorTiempo.setBounds(255, 151, 300, 14);
+		lblErrorTiempo.setBounds(266, 151, 300, 14);
 		contentPane.add(lblErrorTiempo);
 
 		Handler handler = new Handler();
@@ -134,14 +134,6 @@ public class RelacionesForm extends JDialog {
 		btnInsertar.setBounds(85, 202, 114, 32);
 		contentPane.add(btnInsertar);
 		btnInsertar.addActionListener(handler);
-
-		/*
-		 * btnModificar = new JButton("Modificar"); btnModificar.setBounds(85, 202, 114,
-		 * 32); contentPane.add(btnModificar); btnModificar.addActionListener(handler);
-		 * 
-		 * btnBorrar = new JButton("Borrar"); btnBorrar.setBounds(85, 202, 114, 32);
-		 * contentPane.add(btnBorrar); btnBorrar.addActionListener(handler);
-		 */
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setBounds(225, 202, 114, 32);
@@ -158,9 +150,7 @@ public class RelacionesForm extends JDialog {
 
 	public void accion(int accion) {
 		btnInsertar.setVisible(false);
-		/*
-		 * btnModificar.setVisible(false); btnBorrar.setVisible(false);
-		 */
+
 		jtfId1.setEditable(true);
 		jtfId2.setEditable(true);
 		jtfInteraccion.setEditable(true);
@@ -172,25 +162,9 @@ public class RelacionesForm extends JDialog {
 			limpiar();
 		}
 
-		/*
-		 * if (accion == Constantes.MODIFICAR) { btnModificar.setVisible(true);
-		 * jtfInteraccion.setEditable(false); mostrar(empleadoAsalariado); }
-		 * 
-		 * if (accion == Constantes.BORRAR) { btnBorrar.setVisible(true);
-		 * jtfId1.setEditable(false); jtfId2.setEditable(false);
-		 * jtfInteraccion.setEditable(false); jtfLikes.setEditable(false);
-		 * jtfTiempo.setEditable(false); mostrar(empleadoAsalariado); }
-		 */
+
 	}
-	/*
-	 * private void mostrar(EmpleadoAsalariado empleadoAsalariado) {
-	 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	 * jtfId1.setText(empleadoAsalariado.getNombre());
-	 * jtfId2.setText(empleadoAsalariado.getApellido());
-	 * jtfInteraccion.setText(empleadoAsalariado.getDocumento());
-	 * jtfLikes.setText(sdf.format(empleadoAsalariado.getFechaNacimiento()));
-	 * jtfTiempo.setText(empleadoAsalariado.getSalario() + ""); }
-	 */
+
 
 	private void limpiar() {
 		jtfId1.setText("");
@@ -218,13 +192,6 @@ public class RelacionesForm extends JDialog {
 				coordinador.verUsuarios();
 			    return;
 			}
-			/*
-			 * if (event.getSource() == btnBorrar) { int resp =
-			 * JOptionPane.showConfirmDialog(null, "Est� seguro que borra este registro?",
-			 * "Confirmar", JOptionPane.YES_NO_OPTION); if (JOptionPane.OK_OPTION == resp)
-			 * coordinador.borrarEmpleadoAsalariado( (new EmpleadoAsalariado(null, null,
-			 * jtfInteraccion.getText(), null, 0.0))); return; }
-			 */
 
 			boolean valido = true;
 
@@ -270,6 +237,7 @@ public class RelacionesForm extends JDialog {
 			Relacion r = new Relacion(u1, u2, interaccion, likes, tiempo);
 			if (event.getSource() == btnInsertar) {
 				coordinador.insertarRelacion(r);
+				JOptionPane.showMessageDialog(null,"Relacion agregado");
 			}
 		}
 
