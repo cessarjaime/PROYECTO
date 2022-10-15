@@ -1,22 +1,23 @@
-package rs.aplicacion;
+package aplicacion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.TreeMap;
 
-import net.datastructures.TreeMap;
-import rs.datos.CargarParametros;
-import rs.datos.Dato;
-import rs.gui.DesktopFrame;
-import rs.gui.MetodosList;
-import rs.gui.RelacionesForm;
-import rs.gui.RelacionesList;
-import rs.gui.UsuariosForm;
-import rs.gui.UsuariosList;
-import rs.gui.UsuariosMetodoForm;
-import rs.logica.Calculo;
-import rs.modelo.Relacion;
-import rs.modelo.Usuario;
+
+import datos.CargarParametros;
+import datos.Dato;
+import gui.DesktopFrame;
+import gui.MetodosList;
+import gui.RelacionesForm;
+import gui.RelacionesList;
+import gui.UsuariosForm;
+import gui.UsuariosList;
+import gui.UsuariosMetodoForm;
+import logica.Calculo;
+import modelo.Relacion;
+import modelo.Usuario;
 
 public class Aplicacion {
 
