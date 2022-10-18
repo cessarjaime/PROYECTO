@@ -1,18 +1,18 @@
-package logica;
+package rs.logica;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import datastructure.AdjacencyMapGraph;
-import datastructure.Edge;
-import datastructure.Graph;
-import datastructure.GraphAlgorithms;
-import datastructure.PositionalList;
-import datastructure.Vertex;
-import modelo.Relacion;
-import modelo.Usuario;
+import net.datastructures.AdjacencyMapGraph;
+import net.datastructures.Edge;
+import net.datastructures.Graph;
+import net.datastructures.GraphAlgorithms;
+import net.datastructures.PositionalList;
+import net.datastructures.Vertex;
+import rs.modelo.Relacion;
+import rs.modelo.Usuario;
 
 public class Calculo {
 

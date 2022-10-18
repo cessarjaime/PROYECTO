@@ -19,8 +19,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import rs.aplicacion.Constantes;
-import rs.aplicacion.Coordinador;
+import rs.controlador.Constantes;
+import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
 public class UsuariosList extends JDialog {

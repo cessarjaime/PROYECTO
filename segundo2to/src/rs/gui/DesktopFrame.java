@@ -17,14 +17,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import rs.aplicacion.Coordinador;
+import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
 public class DesktopFrame extends JFrame {
 
 	private JComboBox metodosJComboBox;
 	private String metodos[] = { "    ", "Grado Promedio", "Los mas influyentes", "El camino mas nuevo",
-			"Tiempo de amistad", "Amigos de", "Cantidad de Amigos", "El mas influyente", "    " };
+			"Tiempo de amistad", "Amigos de", "Cantidad de amigos", "El mas influyente", "Densidad",
+			"Sugerencia de Amistad", "El que mas interactúa" };
 	private Coordinador coordinador;
 	private JMenuItem mntmNewMenuItem_1;
 	private JMenuItem mntmNewMenuItem_2;
@@ -67,7 +68,7 @@ public class DesktopFrame extends JFrame {
 		mnNewMenu.add(mntmNewMenuItem2);
 
 		Fondo fondo = new Fondo();
-		setContentPane(fondo); 
+		setContentPane(fondo);
 
 		setBounds(100, 100, 650, 600);
 		setSize(600, 480);
@@ -80,10 +81,10 @@ public class DesktopFrame extends JFrame {
 		lblFun.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblFun.setBounds(175, 50, 200, 30);
 		add(lblFun);
-		
+
 		metodosJComboBox = new JComboBox(metodos); // set up JComboBox
-		metodosJComboBox.setMaximumRowCount(8); // display three rows
-		metodosJComboBox.setBounds(200, 100, 150, 30);
+		metodosJComboBox.setMaximumRowCount(10); // display three rows
+		metodosJComboBox.setBounds(185, 100, 175, 30);
 		metodosJComboBox.addItemListener(new ItemListener() // anonymous inner class
 		{
 			// handle JComboBox event
@@ -97,7 +98,7 @@ public class DesktopFrame extends JFrame {
 								"El grado promedio es:\n" + coordinador.mostrarGradoPromedio());
 						break;
 					case 2:
-						coordinador.losMetodosList(null, null, null, 2);
+						coordinador.losMetodosUsuarioList(null, null, null, 2);
 						break;
 					case 3:
 						coordinador.mostrarCaminoUsuarios(3);
@@ -110,7 +111,7 @@ public class DesktopFrame extends JFrame {
 						if (u == null)
 							break;
 						else {
-							coordinador.losMetodosList(u, null, null, 5);
+							coordinador.losMetodosUsuarioList(u, null, null, 5);
 						}
 						break;
 					case 6:
@@ -125,6 +126,22 @@ public class DesktopFrame extends JFrame {
 					case 7:
 						JOptionPane.showMessageDialog(null,
 								"El mas influyente de todos es\n" + coordinador.mostrarMasInfluyente());
+						break;
+					case 8:
+						coordinador.losMetodosRelacionList();
+						break;
+					case 9:
+						u = verificarUsuario();
+						if (u == null)
+							break;
+						else {
+							JOptionPane.showMessageDialog(null, "Una sugerencia de amistad de " + u.getNombre()
+									+ " es el\n" + coordinador.mostrarSugerenciaDeAmitad(u));
+						}
+						break;
+					case 10:
+						JOptionPane.showMessageDialog(null, "El usuario que mas interactua en la red es el\n"
+								+ coordinador.mostrarElQueMasInteractua());
 						break;
 					}
 
@@ -165,7 +182,6 @@ public class DesktopFrame extends JFrame {
 			if (event.getSource() == mntmNewMenuItem2)
 				coordinador.verRelaciones();
 
-			
 		}
 	}
 

@@ -1,6 +1,8 @@
-package rs.aplicacion;
+package rs.controlador;
 
 import java.util.List;
+import java.util.TreeMap;
+
 import rs.logica.Calculo;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
@@ -16,8 +18,9 @@ public class Coordinador {
 	private UsuariosList usuariosList;
 	private RelacionesForm relacionesForm;
 	private RelacionesList relacionesList;
-	private MetodosList metodosList;
+	private MetodosUsuarioList metodosUsuarioList;
 	private UsuariosMetodoForm usuariosMetodoForm;
+	private MetodosRelacionList metodosRelacionList;
 
 	public Calculo getCalculo() {
 		return calculo;
@@ -75,12 +78,13 @@ public class Coordinador {
 		this.relacionesList = relacionesList;
 	}
 
-	public MetodosList getMetodosList() {
-		return metodosList;
+
+	public MetodosUsuarioList getMetodosUsuarioList() {
+		return metodosUsuarioList;
 	}
 
-	public void setMetodosList(MetodosList metodosList) {
-		this.metodosList = metodosList;
+	public void setMetodosUsuarioList(MetodosUsuarioList metodosUsuarioList) {
+		this.metodosUsuarioList = metodosUsuarioList;
 	}
 
 	public UsuariosMetodoForm getUsuariosMetodoForm() {
@@ -89,6 +93,14 @@ public class Coordinador {
 
 	public void setUsuariosMetodoForm(UsuariosMetodoForm usuariosMetodoForm) {
 		this.usuariosMetodoForm = usuariosMetodoForm;
+	}
+
+	public MetodosRelacionList getMetodosRelacionList() {
+		return metodosRelacionList;
+	}
+
+	public void setMetodosRelacionList(MetodosRelacionList metodosRelacionList) {
+		this.metodosRelacionList = metodosRelacionList;
 	}
 
 	public void mostrarInsertarUsuario() {
@@ -151,9 +163,9 @@ public class Coordinador {
 		return calculo.gradoPromedio();
 	}
 
-	public void losMetodosList(Usuario u, String id1, String id2, int opcion) {
-		metodosList.loadTable(u, id1, id2, opcion);
-		metodosList.setVisible(true);
+	public void losMetodosUsuarioList(Usuario u, String id1, String id2, int opcion) {
+		metodosUsuarioList.loadTable(u, id1, id2, opcion);
+		metodosUsuarioList.setVisible(true);
 	}
 
 	public List<Usuario> listaInfluyentes() {
@@ -187,5 +199,18 @@ public class Coordinador {
 
 	public void cancelarCaminoUsuarios() {
 		usuariosMetodoForm.setVisible(false);
+	}
+	public void losMetodosRelacionList() {
+		metodosRelacionList.loadTable();
+		metodosRelacionList.setVisible(true);
+	}
+	public TreeMap <String,Usuario> relacionMasdensa(){
+		return calculo.usuariosQueMasInteractúanEntreSi();	
+	}
+	public Usuario mostrarSugerenciaDeAmitad(Usuario u) {
+		return calculo.sugerenciaNuevaAmistad(u);
+	}
+	public Usuario mostrarElQueMasInteractua() {
+		return calculo.usuarioQueMasIteractuaEnRedes();	
 	}
 }

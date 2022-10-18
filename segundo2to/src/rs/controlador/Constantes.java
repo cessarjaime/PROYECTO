@@ -1,4 +1,4 @@
-package rs.aplicacion;
+package rs.controlador;
 
 public class Constantes {
 	public final static int CANCELAR = 0;

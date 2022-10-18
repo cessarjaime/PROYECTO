@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import rs.aplicacion.Coordinador;
+import rs.controlador.Coordinador;
 import rs.modelo.Gender;
 import rs.modelo.Usuario;
 import rs.util.Validation;
@@ -135,7 +135,7 @@ public class UsuariosMetodoForm extends JDialog {
 
 			if (event.getSource() == btnInsertar)
 				if (opcion == 3)
-					coordinador.losMetodosList(null, u1.getId(), u2.getId(), 3);
+					coordinador.losMetodosUsuarioList(null, u1.getId(), u2.getId(), 3);
 				else {
 					if(coordinador.mostrarTiempoAmistad(u1, u2)==0)
 						JOptionPane.showMessageDialog(null,u1.getNombre() + " y "

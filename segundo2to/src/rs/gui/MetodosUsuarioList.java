@@ -9,10 +9,10 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import rs.aplicacion.Coordinador;
+import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
-public class MetodosList extends JDialog {
+public class MetodosUsuarioList extends JDialog {
 	
 	private Coordinador coordinador;
 	private JPanel contentPane;
@@ -20,7 +20,7 @@ public class MetodosList extends JDialog {
 	private JTable tableUsuariosMetodos;
 	
 
-	public MetodosList() {
+	public MetodosUsuarioList() {
 		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 756, 366);
 		contentPane = new JPanel();

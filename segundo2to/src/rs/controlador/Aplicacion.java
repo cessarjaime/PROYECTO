@@ -1,14 +1,14 @@
-package rs.aplicacion;
+package rs.controlador;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
-import net.datastructures.TreeMap;
+import java.util.TreeMap;
 import rs.datos.CargarParametros;
 import rs.datos.Dato;
 import rs.gui.DesktopFrame;
-import rs.gui.MetodosList;
+import rs.gui.MetodosRelacionList;
+import rs.gui.MetodosUsuarioList;
 import rs.gui.RelacionesForm;
 import rs.gui.RelacionesList;
 import rs.gui.UsuariosForm;
@@ -28,8 +28,9 @@ public class Aplicacion {
 	private UsuariosList usuariosList;
 	private RelacionesForm relacionesForm;
 	private RelacionesList relacionesList;
-	private MetodosList metodosList;
+	private MetodosUsuarioList metodosUsuarioList;
 	private UsuariosMetodoForm usuariosMetodoForm;
+	private MetodosRelacionList metodosRelacionList;
 
 	public static void main(String[] args) {
 		Aplicacion miAplicacion = new Aplicacion();
@@ -69,16 +70,18 @@ public class Aplicacion {
 		usuariosList = new UsuariosList();
 		relacionesForm = new RelacionesForm();
 		relacionesList = new RelacionesList();
-		metodosList= new MetodosList ();
+		metodosUsuarioList= new MetodosUsuarioList ();
 		usuariosMetodoForm = new UsuariosMetodoForm();
+		metodosRelacionList = new MetodosRelacionList();
 		
 		desktopFrame.setCoordinador(coordinador);
 		usuariosForm.setCoordinador(coordinador);
 		usuariosList.setCoordinador(coordinador);
 		relacionesForm.setCoordinador(coordinador);
 		relacionesList.setCoordinador(coordinador);
-		metodosList.setCoordinador(coordinador);
+		metodosUsuarioList.setCoordinador(coordinador);
 		usuariosMetodoForm.setCoordinador(coordinador);
+		metodosRelacionList.setCoordinador(coordinador);
 		
 		
 		coordinador.setCalculo(calculo);
@@ -88,8 +91,9 @@ public class Aplicacion {
 		coordinador.setUsuariosList(usuariosList);
 		coordinador.setRelacionesForm(relacionesForm);
 		coordinador.setRelacionesList(relacionesList);
-		coordinador.setMetodosList(metodosList);
+		coordinador.setMetodosUsuarioList(metodosUsuarioList);
 		coordinador.setUsuariosMetodoForm(usuariosMetodoForm);
+		coordinador.setMetodosRelacionList(metodosRelacionList);
 		
 		desktopFrame.setVisible(true);
 

@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import rs.aplicacion.Constantes;
-import rs.aplicacion.Coordinador;
+import rs.controlador.Constantes;
+import rs.controlador.Coordinador;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
 import rs.util.Validation;
@@ -75,7 +75,7 @@ public class RelacionesForm extends JDialog {
 
 		JLabel lblInterracion = new JLabel("Interracion diaria:");
 		lblInterracion.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblInterracion.setBounds(42, 89,120, 14);
+		lblInterracion.setBounds(42, 89, 120, 14);
 		contentPane.add(lblInterracion);
 
 		jtfInteraccion = new JTextField();
@@ -157,14 +157,10 @@ public class RelacionesForm extends JDialog {
 		jtfLikes.setEditable(true);
 		jtfTiempo.setEditable(true);
 
-		if (accion == Constantes.INSERTAR) {
-			btnInsertar.setVisible(true);
-			limpiar();
-		}
-
+		btnInsertar.setVisible(true);
+		limpiar();
 
 	}
-
 
 	private void limpiar() {
 		jtfId1.setText("");
@@ -172,7 +168,7 @@ public class RelacionesForm extends JDialog {
 		jtfInteraccion.setText("");
 		jtfLikes.setText("");
 		jtfTiempo.setText("");
-		
+
 		lblErrorId1.setText("");
 		lblErrorId2.setText("");
 		lblErrorInteraccion.setText("");
@@ -190,11 +186,10 @@ public class RelacionesForm extends JDialog {
 
 			if (event.getSource() == btnConsultar) {
 				coordinador.verUsuarios();
-			    return;
+				return;
 			}
 
 			boolean valido = true;
-
 
 			// validar id1
 			Usuario u1 = coordinador.buscarUsuario(jtfId1.getText());
@@ -224,20 +219,20 @@ public class RelacionesForm extends JDialog {
 				lblErrorLikes.setText("Likes no valido");
 				valido = false;
 			}
-            
+
 			// validar fecha de Amistad
-			LocalDate tiempo=Validation.isDate(jtfTiempo.getText());
-			if (tiempo==null) {
+			LocalDate tiempo = Validation.isDate(jtfTiempo.getText());
+			if (tiempo == null) {
 				lblErrorTiempo.setText("Formato de fecha AAAA-MM-DD");
 				valido = false;
 			}
 
-			if (!valido) 
+			if (!valido)
 				return;
 			Relacion r = new Relacion(u1, u2, interaccion, likes, tiempo);
 			if (event.getSource() == btnInsertar) {
 				coordinador.insertarRelacion(r);
-				JOptionPane.showMessageDialog(null,"Relacion agregado");
+				JOptionPane.showMessageDialog(null, "Relacion agregado");
 			}
 		}
 

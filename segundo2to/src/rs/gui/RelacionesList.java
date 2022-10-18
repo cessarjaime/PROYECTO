@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import rs.aplicacion.Coordinador;
+import rs.controlador.Coordinador;
 import rs.modelo.Relacion;
 
 public class RelacionesList extends JDialog {
@@ -69,7 +69,7 @@ public class RelacionesList extends JDialog {
 
 	public void addRow(Relacion relacion) {
 		Object[] row = new Object[tableRelaciones.getModel().getColumnCount()];
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
 		row[0] = relacion.getUsuario1().getNombre();
 		row[1] = relacion.getUsuario1().getId();
 		row[2] = relacion.getUsuario2().getNombre();

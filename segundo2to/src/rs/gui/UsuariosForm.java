@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import rs.aplicacion.Constantes;
-import rs.aplicacion.Coordinador;
+import rs.controlador.Constantes;
+import rs.controlador.Coordinador;
 import rs.modelo.Gender;
 import rs.modelo.Usuario;
 import rs.util.Validation;
