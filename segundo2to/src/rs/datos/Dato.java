@@ -1,4 +1,4 @@
-package rs.datos;
+package datos;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,9 +11,9 @@ import java.util.Scanner;
 import java.time.LocalDate;
 
 import java.util.TreeMap;
-import rs.modelo.Gender;
-import rs.modelo.Relacion;
-import rs.modelo.Usuario;
+import modelo.Gender;
+import modelo.Relacion;
+import modelo.Usuario;
 
 public class Dato {
 	FileWriter fw;
