@@ -1,7 +1,9 @@
-package rs.modelo;
+package modelo;
 
 import java.time.LocalDate;
 import java.util.Objects;
+
+import util.Calendario;
 
 public class Relacion {
 
@@ -11,7 +13,7 @@ public class Relacion {
 	private int likes;
 	private LocalDate fechaAmistad;
 	
-	public Relacion(Usuario usuario1, Usuario usuario2, int interaccion, int likes,LocalDate fechaAmistad) {
+	public Relacion(Usuario usuario1, Usuario usuario2, int interaccion, int likes, LocalDate fechaAmistad) {
 		super();
 		this.usuario1 = usuario1;
 		this.usuario2 = usuario2;
@@ -56,21 +58,10 @@ public class Relacion {
 		return fechaAmistad;
 	}
 
-	public int getTiempoAmistad() {
-		
-		int anios = LocalDate.now().getYear() - fechaAmistad.getYear();
-		int meses = LocalDate.now().getMonthValue() - fechaAmistad.getMonthValue();
-		int dias = LocalDate.now().getDayOfMonth() - fechaAmistad.getDayOfMonth();
-		if (meses < 0 || (meses == 0 && dias < 0)) {
-			anios--;
-		}
-		return anios;
-	}
-
 	@Override
 	public String toString() {
 		return "Relacion ["+ usuario1 + " " + usuario2 + " " + interaccion + " "
-				+ likes + " " + getTiempoAmistad() + "]";
+				+ likes + " " + Calendario.getTiempo(fechaAmistad) + "]";
 	}
 
 	@Override
@@ -92,11 +83,5 @@ public class Relacion {
 		return Objects.equals(usuario1, other.usuario2) && Objects.equals(usuario2, other.usuario1);
 	}
 
-
-	
-	
-	
-	
-		
-	
 }
+	
