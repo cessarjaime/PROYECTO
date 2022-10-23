@@ -1,18 +1,21 @@
-package rs.logica;
+package logica;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
-import net.datastructures.AdjacencyMapGraph;
-import net.datastructures.Edge;
-import net.datastructures.Graph;
-import net.datastructures.GraphAlgorithms;
-import net.datastructures.PositionalList;
-import net.datastructures.Vertex;
-import rs.modelo.Relacion;
-import rs.modelo.Usuario;
+import datastructure.AdjacencyMapGraph;
+import datastructure.Edge;
+import datastructure.Graph;
+import datastructure.GraphAlgorithms;
+import datastructure.PositionalList;
+import datastructure.Vertex;
+import modelo.Relacion;
+import modelo.Usuario;
+import util.Calendario;
 
 public class Calculo {
 
@@ -57,7 +60,7 @@ public class Calculo {
 		if(arcoAmistad==null)
 			return 0;
 		Relacion amistad = arcoAmistad.getElement();
-		return amistad.getTiempoAmistad();
+		return Calendario.getTiempo(amistad.getFechaAmistad());
 	}
 	
 	/**Listado de los usuarios en orden del más influyente al menos*/
@@ -94,24 +97,67 @@ public class Calculo {
 		return influyente;
 	}
 	
-	/**Los usuarios que más interactuan entre si */
-	public TreeMap <String,Usuario> usuariosQueMasInteractúanEntreSi(){
-		TreeMap <String,Usuario> usuariosMasConectados = new TreeMap<String,Usuario>();
-		int interacciones = 0;
-		Relacion relacionMasDensa = null;
-		for (Edge<Relacion> relaciones : redSocial.edges()) {
-			 
-			if (interacciones < relaciones.getElement().getInteraccion())
-				relacionMasDensa = relaciones.getElement();
-				interacciones = relaciones.getElement().getInteraccion();
+	/**usuarios que más interactuan */
+	public List<Usuario> usuariosQueMasInteractuan(){
+		TreeMap <String,Integer> usuariosIdInteracciones = new TreeMap<String,Integer>();
+		for (Vertex<Usuario> usersVertices : redSocial.vertices()) {
+			usuariosIdInteracciones.put(usersVertices.getElement().getId() , totalInteraccionesUsuarios(usersVertices.getElement()));
 		}
-		Usuario usuario1 = relacionMasDensa.getUsuario1();
-		Usuario usuario2 = relacionMasDensa.getUsuario2();
-		usuariosMasConectados.put(usuario1.getId(), usuario1);
-		usuariosMasConectados.put(usuario2.getId(), usuario2);
-		return usuariosMasConectados;
+		
+		return ordenarUsuariosQueMasInteractuanEntreSi(usuariosIdInteracciones);
 	}
-
+	
+	/**total de interacciones de un usuario*/
+	public int totalInteraccionesUsuarios (Usuario u) {
+		int interacciones = 0;
+		for (Edge<Relacion> arcosRelaciones : redSocial.incomingEdges(vertices.get(u.getId()))) {
+			interacciones = arcosRelaciones.getElement().getInteraccion() + interacciones;
+		}
+		return interacciones;
+	}
+	
+	/**ordena los usuarios por interacciones*/
+	private List<Usuario> ordenarUsuariosQueMasInteractuanEntreSi(
+			TreeMap<String, Integer> arbolUsuarioInteracciones) {
+		List<Usuario> usuariosOredenadosPorInteracciones = new ArrayList<Usuario>();
+		Integer data[] = new Integer[arbolUsuarioInteracciones.size()];
+		int l = 0;
+		//carga valores de interacciones en un array
+		for (Integer valores : arbolUsuarioInteracciones.values()) {
+			data[l] = valores;
+			l++;
+		}
+		//ordena el array de mayor a menor por lo tanto los valores de las interacciones
+		int aux;
+		for(int i = 0; i < data.length; i++){
+			for(int j=i+1; j < data.length; j++){
+				if(data[i] < data[j]){
+					aux = data[i];
+					data[i] = data[j];
+					data[j] = aux;
+				}
+			}
+		} 
+		//utilizando el treeMap carga en una lista ordenada por cantidad de interacciones
+		Entry<String, Integer> entrada;
+		Set<Entry<String, Integer>> entradas =  arbolUsuarioInteracciones.entrySet();
+		Iterator<Entry<String, Integer>> iterator = entradas.iterator();
+		for (int k = 0; k < data.length; k++) {
+			boolean listado = false;
+			entradas =  arbolUsuarioInteracciones.entrySet();
+			iterator = entradas.iterator();
+			while(iterator.hasNext() && !listado) {
+				entrada = iterator.next();
+				if (data[k].equals(entrada.getValue())){
+					usuariosOredenadosPorInteracciones.add(vertices.get(entrada.getKey()).getElement());
+					listado = true;
+					arbolUsuarioInteracciones.remove(entrada.getKey());
+				}
+			}
+		}
+		return usuariosOredenadosPorInteracciones;
+	}	
+	
 	/**Usuario que más interactúa en las redes sociales*/
 	public Usuario usuarioQueMasIteractuaEnRedes() {
 		Usuario vicio = null;
@@ -139,7 +185,7 @@ public class Calculo {
 
 		for (Relacion rel : arcos)
 			g.insertEdge(verticesC.get(rel.getUsuario1().getId()), verticesC.get(rel.getUsuario2().getId()),
-					rel.getTiempoAmistad());
+					Calendario.getTiempo(rel.getFechaAmistad()));
 
 		PositionalList<Vertex<Usuario>> c = GraphAlgorithms.shortestPathList(g, verticesC.get(id), verticesC.get(id1));
 
@@ -163,12 +209,12 @@ public class Calculo {
 		return sugeridos;
 	}
 	
-	/**Sugerencia de nueva amistad*/
-	public Usuario sugerenciaNuevaAmistad(Usuario usuario) {
-		Usuario sugerido = null;
+	/**Sugerencias de nueva amistad*/
+	public List<Usuario> sugerenciaNuevaAmistad(Usuario usuario) {
+		List<Usuario> sugerenciasNuevasAmistad = new ArrayList<Usuario>();
 		Vertex<Usuario> verticeUsuario = vertices.get(usuario.getId());
 		List<Vertex<Usuario>> sugeridos = new ArrayList<Vertex<Usuario>>();
-		int amigosNecesarios = 0;
+		int amigosNecesarios = 2;
 		sugeridos = noSonAmigosDe(usuario);
 		for (Vertex<Usuario> verticeSugerido : sugeridos) {
 			int amigosEnComun = 0;
@@ -184,9 +230,9 @@ public class Calculo {
 				}
 			}
 			if (amigosEnComun >= amigosNecesarios)
-				sugerido = verticeSugerido.getElement();
+				sugerenciasNuevasAmistad.add(verticeSugerido.getElement());
 		}
-		return sugerido;
+		return sugerenciasNuevasAmistad;
 	}
 	
 	/** Devuelve el grado promedio */
