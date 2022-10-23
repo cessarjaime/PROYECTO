@@ -1,4 +1,4 @@
-package rs.test;
+package test;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
@@ -7,25 +7,25 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.datastructures.Graph;
-//import datastructure.TreeMap;
-
-import rs.datos.CargarParametros;
-import rs.datos.Dato;
-import rs.logica.Calculo;
-import rs.modelo.Relacion;
-import rs.modelo.Usuario;
+import datastructure.Graph;
+import datos.CargarParametros;
+import datos.Dato;
+import logica.Calculo;
+import modelo.Relacion;
+import modelo.Usuario;
 public class TestRedesSociales {
 	private Calculo calculo;
 	private Usuario u1;
 	private Usuario u2;
-	private TreeMap<String, Usuario> usuarios;
-	private List<Relacion> relaciones;
+	private Usuario u3;
+	private Usuario u4;
+	private Usuario u5;
+	private Usuario u6;
+	private Usuario u7;
+	private TreeMap<String, Usuario> usuarios;	
 	
 	@Before
 	public void setUp() throws Exception {
@@ -41,9 +41,9 @@ public class TestRedesSociales {
 
 		List<Relacion> relaciones = null;
 		try {
-			usuarios = Dato.cargarUsuarios(CargarParametros.getArchivoUsuario());
+			usuarios = Dato.cargarUsuarios(CargarParametros.getArchivoUsuarioTest());
 
-			relaciones = Dato.cargarRelaciones(CargarParametros.getArchivoRelacion(), usuarios);
+			relaciones = Dato.cargarRelaciones(CargarParametros.getArchivoRelacionTest(), usuarios);
 
 		} catch (FileNotFoundException e) {
 			System.err.print("Error al cargar archivos de datos");
@@ -51,21 +51,37 @@ public class TestRedesSociales {
 		}
 
 		calculo = new Calculo(usuarios, relaciones);
-		
+				
 		u1 = usuarios.get("juan");
 		u2 = usuarios.get("marcos");
-		
+		u3 = usuarios.get("lucas");
+		u4 = usuarios.get("maria");
+		u5 = usuarios.get("ana");
+		u6 = usuarios.get("luis");
+		u7 = usuarios.get("micaela");
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
+	@Test
+	public void usuariosCargados () {
+		TreeMap<String, Usuario> cargados = usuarios;
+		assertTrue(cargados.containsValue(u1) && u1.getId().equals("juan"));
+		assertTrue(cargados.containsValue(u2) && u2.getId().equals("marcos"));
+		assertTrue(cargados.containsValue(u3) && u3.getId().equals("lucas"));
+		assertTrue(cargados.containsValue(u4) && u4.getId().equals("maria"));
+		assertTrue(cargados.containsValue(u5) && u5.getId().equals("ana"));
+		assertTrue(cargados.containsValue(u6) && u6.getId().equals("luis"));
+		assertTrue(cargados.containsValue(u7) && u7.getId().equals("micaela"));
+	}
+	
 	@Test
 	public void testAmigosDe() {
-		List<Usuario> resultadObtenido = calculo.amigosDe(u1);
-		assertTrue(calculo.amigosDe(u1).size() == resultadObtenido.size()
-				&& calculo.amigosDe(u1).containsAll(resultadObtenido));		
+		List<Usuario> resultadoObtenido = calculo.amigosDe(u1);
+		assertTrue(resultadoObtenido.contains(u2));
+		assertEquals(resultadoObtenido.size(),3,0.01);
 	}
 	
 	@Test
@@ -75,30 +91,27 @@ public class TestRedesSociales {
 	
 	@Test
 	public void testOrdenMasInfluyentes() {
-		List<Usuario> resultadObtenido = calculo.masInfluyentes();
-		assertTrue(calculo.masInfluyentes().size() == resultadObtenido.size()
-				&& calculo.masInfluyentes().containsAll(resultadObtenido));		
-	}
-	
-	@Test
-	public void testUsuarioMasInfluyentes() {
-		Usuario u3 = calculo.masInfluyente();
-		assertTrue(calculo.masInfluyente().equals(u3));		
+		List<Usuario> resultadoObtenido = calculo.masInfluyentes();
+		assertTrue(resultadoObtenido.get(0).equals(u6));
+		assertEquals(resultadoObtenido.size(),7,0.01);	
 	}
 	
 	@Test
 	public void testUsuarioQueMasInteractuanEntreSi() {
-		TreeMap<String,Usuario> resultado= calculo.usuariosQueMasInteractúanEntreSi();
-
-		assertTrue(calculo.usuariosQueMasInteractúanEntreSi().equals(resultado));		
+		List<Usuario> resultadoObtenido= calculo.usuariosQueMasInteractuan();
+		Usuario vicio = resultadoObtenido.get(0);
+		int resultado = calculo.totalInteraccionesUsuarios(vicio);
+		assertTrue(vicio.equals(u1));
+		assertEquals(resultado,17,0.01);
+		assertTrue(resultadoObtenido.get(1).equals(u2));
+		assertTrue(resultadoObtenido.get(6).equals(u7));
 	}
 	
 	@Test
 	public void testUsuarioQueMasInteractuaEnRedes() {
-		Usuario u3 = calculo.usuarioQueMasIteractuaEnRedes();
-		assertTrue(calculo.usuarioQueMasIteractuaEnRedes().equals(u3));		
+		Usuario resultado = calculo.usuarioQueMasIteractuaEnRedes();
+		assertTrue(resultado.equals(u1));		
 	}
-	
 	
 	@Test
 	public void testGradoPromedio() {
@@ -109,15 +122,18 @@ public class TestRedesSociales {
 		
 	@Test
 	public void testCaminoMasNuevo() {
-		List<Usuario> resultadObtenido = calculo.caminoMasNuevo(u1.getId(),u2.getId());
-		assertTrue(calculo.caminoMasNuevo(u1.getId(),u2.getId()).size() == resultadObtenido.size()
-				&& calculo.caminoMasNuevo(u1.getId(), u2.getId()).containsAll(resultadObtenido));		
+		List<Usuario> resultadoObtenido = calculo.caminoMasNuevo(u1.getId(),u2.getId());
+		assertEquals(resultadoObtenido.size(),2,0.01);
+		assertTrue(resultadoObtenido.contains(u1));
+		assertTrue(resultadoObtenido.contains(u2));
+					
 	}
 	
 	@Test
 	public void testSugerenciaDeAmistad() {
-		Usuario u3 = calculo.sugerenciaNuevaAmistad(u1);
-		assertTrue(calculo.sugerenciaNuevaAmistad(u1).equals(u3));		
+		List<Usuario> resultadoObtenido = calculo.sugerenciaNuevaAmistad(u1);
+		assertEquals(resultadoObtenido.size(),1,0.01);
+		assertTrue(resultadoObtenido.contains(u4));	
 	}
 
 	@Test
@@ -128,4 +144,5 @@ public class TestRedesSociales {
 				&& calculo.getRedSocial().equals(resultadObtenido));
 				
 	}
+		
 }
