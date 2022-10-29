@@ -17,6 +17,7 @@ import rs.modelo.Usuario;
 import rs.util.FileUtil;
 
 public class UsuarioAleatorioDAO implements UsuarioDAO {
+	
 	final static Logger logger = Logger.getLogger(UsuarioAleatorioDAO.class);
 	private RandomAccessFile file = null;
 	private Hashtable<String, Integer> index;
@@ -154,7 +155,7 @@ public class UsuarioAleatorioDAO implements UsuarioDAO {
 	private Usuario readRecord() throws IOException {
 		return new Usuario(FileUtil.readString(file, SIZE_ID), FileUtil.readString(file, SIZE_NOMBRE),
 				Gender.valueOf(FileUtil.readString(file, SIZE_GENERO)), FileUtil.readString(file, SIZE_CIUDAD),
-				FileUtil.readDate1(file), FileUtil.readString(file, SIZE_ESTADOCIVIL),
+				FileUtil.readDate(file), FileUtil.readString(file, SIZE_ESTADOCIVIL),
 				FileUtil.readString(file, SIZE_NIVELACADEMICO));
 
 	}
@@ -164,7 +165,7 @@ public class UsuarioAleatorioDAO implements UsuarioDAO {
 		FileUtil.writeString(file, usuario.getNombre(), SIZE_NOMBRE);
 		FileUtil.writeString(file, usuario.getGenero().toString(), SIZE_GENERO);
 		FileUtil.writeString(file, usuario.getCiudad(), SIZE_CIUDAD);
-		FileUtil.writeDate1(file, usuario.getFechaNacimiento());
+		FileUtil.writeDate(file, usuario.getFechaNacimiento());
 		FileUtil.writeString(file, usuario.getEstadoCivil(), SIZE_ESTADOCIVIL);
 		FileUtil.writeString(file, usuario.getNivelAcademico(), SIZE_NIVELACADEMICO);
 

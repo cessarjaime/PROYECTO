@@ -26,6 +26,7 @@ import rs.servicio.UsuarioServiceImpl;
 import rs.util.Calendario;
 
 public class Calculo {
+	
 	final static Logger logger = Logger.getLogger(Calculo.class);
 	private Graph<Usuario, Relacion> redSocial;
 	private TreeMap<String, Vertex<Usuario>> vertices;

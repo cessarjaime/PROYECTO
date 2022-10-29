@@ -22,6 +22,7 @@ import rs.conexion.AConnection;
 import rs.controlador.Coordinador;
 
 public class DesktopFrame extends JFrame {
+	
 	final static Logger logger = Logger.getLogger(DesktopFrame.class);
 	
 	private JComboBox metodosJComboBox;

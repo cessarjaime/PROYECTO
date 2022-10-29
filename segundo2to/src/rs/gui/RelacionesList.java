@@ -29,6 +29,7 @@ import rs.modelo.Relacion;
 import rs.modelo.Usuario;
 
 public class RelacionesList extends JDialog {
+	
 	final static Logger logger = Logger.getLogger(RelacionesList .class);
 	private Coordinador coordinador;
 	private JPanel contentPane;

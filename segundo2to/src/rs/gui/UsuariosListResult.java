@@ -19,6 +19,7 @@ import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
 public class UsuariosListResult extends JDialog {
+	
 	final static Logger logger = Logger.getLogger(UsuariosListResult.class);
 	private Coordinador coordinador;
 	private JPanel contentPane;

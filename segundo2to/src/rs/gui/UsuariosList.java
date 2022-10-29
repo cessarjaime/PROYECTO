@@ -26,6 +26,7 @@ import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
 public class UsuariosList extends JDialog {
+	
 	final static Logger logger = Logger.getLogger(UsuariosList.class);
 	private Coordinador coordinador;
 	private int accion;

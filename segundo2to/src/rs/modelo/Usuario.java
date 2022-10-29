@@ -6,7 +6,6 @@ import java.util.Objects;
 import rs.util.Calendario;
 
 public class Usuario {
-
 	private String id;
 	private String nombre;
 	private LocalDate fechaNacimiento;

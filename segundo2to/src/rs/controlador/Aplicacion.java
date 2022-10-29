@@ -69,7 +69,6 @@ public class Aplicacion {
 		
 		desktopFrame.setVisible(true);
 		
-
 	}
 
 }

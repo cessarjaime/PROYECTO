@@ -19,6 +19,7 @@ import rs.negocio.Calculo;
 import rs.negocio.RedSocial;
 
 public class TestRedesSociales {
+	
 	private Calculo calculo;
 	private RedSocial redSocial;
 	private Usuario u1;
@@ -32,6 +33,7 @@ public class TestRedesSociales {
 
 	@Before
 	public void setUp() throws Exception {
+		
     //El text se prueba con el archivo secuencial se cambia en factory.properties
 		redSocial=new RedSocial();
 		calculo = new Calculo(redSocial.getUsuarios(),redSocial.getRelaciones());

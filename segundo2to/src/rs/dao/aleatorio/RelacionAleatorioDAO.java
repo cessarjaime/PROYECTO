@@ -19,6 +19,7 @@ import rs.modelo.Usuario;
 import rs.util.FileUtil;
 
 public class RelacionAleatorioDAO implements RelacionDAO {
+	
 	final static Logger logger = Logger.getLogger(RelacionAleatorioDAO.class);
 	private RandomAccessFile file = null;
 	private Hashtable<Integer, Integer> index;
@@ -166,7 +167,7 @@ public class RelacionAleatorioDAO implements RelacionDAO {
 
 		return new Relacion(usuarios.get(FileUtil.readString(file, SIZE_ID1)),
 				usuarios.get(FileUtil.readString(file, SIZE_ID2)), file.readInt(), file.readInt(),
-				FileUtil.readDate1(file));
+				FileUtil.readDate(file));
 	}
 
 	private void writeRecord(Relacion relacion) throws IOException {
@@ -174,7 +175,7 @@ public class RelacionAleatorioDAO implements RelacionDAO {
 		FileUtil.writeString(file, relacion.getUsuario2().getId(), SIZE_ID2);
 		file.writeInt(relacion.getInteraccion());
 		file.writeInt(relacion.getLikes());
-		FileUtil.writeDate1(file, relacion.getFechaAmistad());
+		FileUtil.writeDate(file, relacion.getFechaAmistad());
 
 	}
 }

@@ -35,21 +35,11 @@ public class FileUtil {
 		file.writeChars(buffer.toString());
 	}
 
-	public static Date readDate(RandomAccessFile file) throws IOException {
-		return new GregorianCalendar(file.readInt(), file.readInt(), file.readInt()).getTime();
-	}
-	public static LocalDate readDate1(RandomAccessFile file) throws IOException {
+	public static LocalDate readDate(RandomAccessFile file) throws IOException {
 		return LocalDate.of(file.readInt(),file.readInt(),file.readInt());
 	}
 
-	public static void writeDate(RandomAccessFile file, Date date) throws IOException {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		file.writeInt(calendar.get(Calendar.YEAR));
-		file.writeInt(calendar.get(Calendar.MONTH));
-		file.writeInt(calendar.get(Calendar.DAY_OF_MONTH));
-	}
-	public static void writeDate1(RandomAccessFile file, LocalDate date) throws IOException {
+	public static void writeDate(RandomAccessFile file, LocalDate date) throws IOException {
 
 	    file.writeInt(date.getYear());
 		file.writeInt(date.getMonthValue());

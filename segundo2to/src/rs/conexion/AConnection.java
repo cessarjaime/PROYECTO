@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import rs.util.FileUtil;
 
 public class AConnection {
+	
 	final static Logger logger = Logger.getLogger(AConnection.class);
 	private static Hashtable<String, RandomAccessFile> files = new Hashtable<String, RandomAccessFile>();
 

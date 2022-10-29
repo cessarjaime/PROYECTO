@@ -26,6 +26,7 @@ public class RelacionSecuencialDAO implements RelacionDAO {
 	TreeMap<String, Usuario> usuarios;
 
 	public RelacionSecuencialDAO() {
+		
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		name = rb.getString("relaciones");
 	    usuarios=cargaUsuarios();

@@ -11,7 +11,7 @@ import rs.negocio.RedSocial;
 public class CargaDatos {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	
 		RedSocial redSocial=new RedSocial();
         
 		Usuario u1 = new Usuario("juan", "Juan", Gender.valueOf("H"), "Puerto Madryn", LocalDate.of(2000, 5, 5),
@@ -61,6 +61,7 @@ public class CargaDatos {
 
 		for (Usuario u : redSocial.getUsuarios())
 			System.out.println(u.getNombre());
+		
 		
 		for (Relacion r :redSocial.getRelaciones())
 			System.out.println(r.getUsuario1().getNombre()+" "

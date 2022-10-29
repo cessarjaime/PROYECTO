@@ -25,6 +25,7 @@ import rs.modelo.Usuario;
 import rs.util.Validation;
 
 public class UsuariosFormConsultas extends JDialog {
+	
 	final static Logger logger = Logger.getLogger(UsuariosFormConsultas.class);
 	private Coordinador coordinador;
 	private int opcion;

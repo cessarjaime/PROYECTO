@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.ResourceBundle;
 
 public class Factory {
+	
 	private static Hashtable<String, Object> instancias = new Hashtable<String, Object>();
 
 	public static Object getInstancia(String objName) {

@@ -30,6 +30,7 @@ import rs.modelo.Usuario;
 import rs.util.Validation;
 
 public class RelacionesForm extends JDialog {
+	
 	final static Logger logger = Logger.getLogger(RelacionesForm.class);
 	private Coordinador coordinador;
 

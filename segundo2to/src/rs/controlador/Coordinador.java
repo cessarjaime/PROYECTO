@@ -9,6 +9,7 @@ import rs.negocio.RedSocial;
 import rs.gui.*;
 
 public class Coordinador {
+	
     private RedSocial redSocial;
 	private Calculo calculo;
 	private DesktopFrame desktopFrame;

@@ -6,7 +6,6 @@ import java.util.Objects;
 import rs.util.Calendario;
 
 public class Relacion {
-
 	private Usuario usuario1;
 	private Usuario usuario2;
 	private int interaccion;

@@ -14,6 +14,7 @@ import rs.servicio.UsuarioService;
 import rs.servicio.UsuarioServiceImpl;
 
 public class RedSocial {
+	
 	final static Logger logger = Logger.getLogger(RedSocial.class);
 	private UsuarioService usuarioService;
 	private RelacionService relacionService;

@@ -4,6 +4,7 @@ import java.util.List;
 import rs.modelo.Relacion;
 
 public interface RelacionDAO {
+	
 	void insertar(Relacion relacion);
 
 	void actualizar(Relacion relacion);

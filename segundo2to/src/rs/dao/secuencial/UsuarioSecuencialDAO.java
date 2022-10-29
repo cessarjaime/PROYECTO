@@ -22,6 +22,7 @@ public class UsuarioSecuencialDAO implements UsuarioDAO {
 	private String name;
 
 	public UsuarioSecuencialDAO() {
+		
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		name = rb.getString("usuarios");
 		list = readFromFile(name);
