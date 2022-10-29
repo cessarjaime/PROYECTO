@@ -3,6 +3,8 @@ package rs.modelo;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import rs.util.Calendario;
+
 public class Usuario {
 
 	private String id;
@@ -26,6 +28,9 @@ public class Usuario {
 		this.estadoCivil = estadoCivil;
 		this.nivelAcademico = nivelAcademico;
 	}
+	public Usuario() {
+		
+	}
 
 	public String getNombre() {
 		return nombre;
@@ -42,17 +47,6 @@ public class Usuario {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	public int getEdad() {
-		int anios = LocalDate.now().getYear() - fechaNacimiento.getYear();
-		int meses = LocalDate.now().getMonthValue() - fechaNacimiento.getMonthValue();
-		int dias = LocalDate.now().getDayOfMonth() - fechaNacimiento.getDayOfMonth();
-		if (meses < 0 || (meses == 0 && dias < 0)) {
-			anios--;
-		}
-		return anios;
-	}
-
 	
 	public enum genero {
 		hombre, mujer;
@@ -118,7 +112,7 @@ public class Usuario {
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nombre=" + nombre + ", fechaNacimiento=" + fechaNacimiento + ", edad="
-				+ getEdad() + ",\n genero=" + genero.getGenero() + ", ciudad=" + ciudad + ", estadoCivil=" + estadoCivil
+				+ Calendario.getTiempo(fechaNacimiento) + ",\n genero=" + genero.getGenero() + ", ciudad=" + ciudad + ", estadoCivil=" + estadoCivil
 				+ ", nivelAcademico=" + nivelAcademico + "]";
 	}
 

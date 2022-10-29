@@ -3,6 +3,8 @@ package rs.modelo;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import rs.util.Calendario;
+
 public class Relacion {
 
 	private Usuario usuario1;
@@ -18,6 +20,9 @@ public class Relacion {
 		this.interaccion = interaccion;
 		this.likes = likes;
 		this.fechaAmistad = fechaAmistad;
+	}
+	public Relacion() {
+		
 	}
 
 	public Usuario getUsuario1() {
@@ -53,24 +58,22 @@ public class Relacion {
 	}
 	
 	public LocalDate getFechaAmistad() {
+	
 		return fechaAmistad;
 	}
 
+
+	public void setFechaAmistad(LocalDate fechaAmistad) {
+		this.fechaAmistad = fechaAmistad;
+	}
 	public int getTiempoAmistad() {
-		
-		int anios = LocalDate.now().getYear() - fechaAmistad.getYear();
-		int meses = LocalDate.now().getMonthValue() - fechaAmistad.getMonthValue();
-		int dias = LocalDate.now().getDayOfMonth() - fechaAmistad.getDayOfMonth();
-		if (meses < 0 || (meses == 0 && dias < 0)) {
-			anios--;
-		}
-		return anios;
+        return Calendario.getTiempo(fechaAmistad);
 	}
 
 	@Override
 	public String toString() {
 		return "Relacion ["+ usuario1 + " " + usuario2 + " " + interaccion + " "
-				+ likes + " " + getTiempoAmistad() + "]";
+				+ likes + " " + Calendario.getTiempo(fechaAmistad) + "]";
 	}
 
 	@Override

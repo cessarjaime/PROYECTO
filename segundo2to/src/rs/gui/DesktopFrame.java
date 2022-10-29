@@ -1,6 +1,5 @@
 package rs.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -17,15 +16,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
+import rs.conexion.AConnection;
 import rs.controlador.Coordinador;
-import rs.modelo.Usuario;
 
 public class DesktopFrame extends JFrame {
-
+	final static Logger logger = Logger.getLogger(DesktopFrame.class);
+	
 	private JComboBox metodosJComboBox;
 	private String metodos[] = { "    ", "Grado Promedio", "Los mas influyentes", "El camino mas nuevo",
-			"Tiempo de amistad", "Amigos de", "Cantidad de amigos", "El mas influyente", "Densidad",
-			"Sugerencia de Amistad", "El que mas interactúa" };
+			"Tiempo de amistad", "Amigos de", "Densidad", "Sugerencia de Amistad", "El que mas interactúa" };
 	private Coordinador coordinador;
 	private JMenuItem mntmNewMenuItem_1;
 	private JMenuItem mntmNewMenuItem_2;
@@ -33,7 +34,8 @@ public class DesktopFrame extends JFrame {
 	private JMenuItem mntmNewMenuItem2;
 
 	public DesktopFrame() {
-
+		
+     logger.debug("Cargando panel principal");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -79,17 +81,17 @@ public class DesktopFrame extends JFrame {
 
 		JLabel lblFun = new JLabel("FUNCIONALIDADES");
 		lblFun.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblFun.setBounds(175, 50, 200, 30);
+		lblFun.setBounds(175, 50, 200, 50);
 		add(lblFun);
 
 		metodosJComboBox = new JComboBox(metodos); // set up JComboBox
-		metodosJComboBox.setMaximumRowCount(10); // display three rows
+		metodosJComboBox.setMaximumRowCount(8); // display three rows
 		metodosJComboBox.setBounds(185, 100, 175, 30);
 		metodosJComboBox.addItemListener(new ItemListener() // anonymous inner class
 		{
 			// handle JComboBox event
 			public void itemStateChanged(ItemEvent event) {
-				Usuario u;
+
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 
 					switch (metodosJComboBox.getSelectedIndex()) {
@@ -102,44 +104,26 @@ public class DesktopFrame extends JFrame {
 						break;
 					case 3:
 						coordinador.mostrarCaminoUsuarios(3);
+
 						break;
 					case 4:
 						coordinador.mostrarCaminoUsuarios(4);
+
 						break;
 					case 5:
-						u = verificarUsuario();
-						if (u == null)
-							break;
-						else {
-							coordinador.losMetodosUsuarioList(u, null, null, 5);
-						}
+
+						coordinador.mostrarCaminoUsuarios(5);
+
 						break;
+
 					case 6:
-						u = verificarUsuario();
-						if (u == null)
-							break;
-						else {
-							JOptionPane.showMessageDialog(null, "Cantidad de amigos del Usuario " + u.getId() + " es\n "
-									+ coordinador.mostrarCantidadAmigos(u));
-						}
+						coordinador.losMetodosUsuarioList(null, null, null, 6);
 						break;
 					case 7:
-						JOptionPane.showMessageDialog(null,
-								"El mas influyente de todos es\n" + coordinador.mostrarMasInfluyente());
+						coordinador.mostrarCaminoUsuarios(7);
+
 						break;
 					case 8:
-						coordinador.losMetodosRelacionList();
-						break;
-					case 9:
-						u = verificarUsuario();
-						if (u == null)
-							break;
-						else {
-							JOptionPane.showMessageDialog(null, "Una sugerencia de amistad de " + u.getNombre()
-									+ " es el\n" + coordinador.mostrarSugerenciaDeAmitad(u));
-						}
-						break;
-					case 10:
 						JOptionPane.showMessageDialog(null, "El usuario que mas interactua en la red es el\n"
 								+ coordinador.mostrarElQueMasInteractua());
 						break;
@@ -154,17 +138,6 @@ public class DesktopFrame extends JFrame {
 
 		add(metodosJComboBox);
 
-	}
-
-	private Usuario verificarUsuario() {
-		String id = JOptionPane.showInputDialog("Ingresa el ID:");
-		if (id == null)
-			return null;
-		if (coordinador.buscarUsuario(id) == null) {
-			JOptionPane.showMessageDialog(null, "El usuario no existe");
-			return null;
-		}
-		return coordinador.buscarUsuario(id);
 	}
 
 	private class Handler implements ActionListener {
@@ -187,7 +160,7 @@ public class DesktopFrame extends JFrame {
 
 	private class Fondo extends JPanel {
 		public void paint(Graphics g) {
-			ImageIcon imagen = new ImageIcon(getClass().getResource("fondo.jpg"));
+			ImageIcon imagen = new ImageIcon(getClass().getResource("/rs/imagen/fondo.jpg"));
 			g.drawImage(imagen.getImage(), 0, 0, getWidth(), getHeight(), null);
 			setOpaque(false);
 			super.paint(g);

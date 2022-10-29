@@ -1,7 +1,12 @@
 package rs.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
+
 import rs.modelo.Gender;
 
 public class Validation {
@@ -34,6 +39,16 @@ public class Validation {
 		try {
 			return Gender.valueOf(g);
 		} catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
+	public static Date isDate(String dateStr, String dateFormat) {
+		DateFormat sdf = new SimpleDateFormat(dateFormat);
+
+		sdf.setLenient(false);
+		try {
+			return sdf.parse(dateStr);
+		} catch (ParseException e) {
 			return null;
 		}
 	}

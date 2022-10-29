@@ -1,36 +1,32 @@
 package rs.controlador;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.TreeMap;
-import rs.datos.CargarParametros;
-import rs.datos.Dato;
+import org.apache.log4j.Logger;
+
+import rs.conexion.AConnection;
 import rs.gui.DesktopFrame;
-import rs.gui.MetodosRelacionList;
-import rs.gui.MetodosUsuarioList;
+import rs.gui.UsuariosListResult;
 import rs.gui.RelacionesForm;
 import rs.gui.RelacionesList;
 import rs.gui.UsuariosForm;
 import rs.gui.UsuariosList;
-import rs.gui.UsuariosMetodoForm;
-import rs.logica.Calculo;
-import rs.modelo.Relacion;
-import rs.modelo.Usuario;
+import rs.gui.UsuariosFormConsultas;
+import rs.negocio.Calculo;
+import rs.negocio.RedSocial;
 
 public class Aplicacion {
-
+	
+	final static Logger logger = Logger.getLogger(Aplicacion.class);
+	
+    private RedSocial redSocial;
 	private Coordinador coordinador;
-    private Calculo calculo;
-	private Dato dato;
+	private Calculo calculo;
 	private DesktopFrame desktopFrame;
 	private UsuariosForm usuariosForm;
 	private UsuariosList usuariosList;
 	private RelacionesForm relacionesForm;
 	private RelacionesList relacionesList;
-	private MetodosUsuarioList metodosUsuarioList;
-	private UsuariosMetodoForm usuariosMetodoForm;
-	private MetodosRelacionList metodosRelacionList;
+	private UsuariosListResult usuariosListResult;
+	private UsuariosFormConsultas usuariosFormConsultas;
 
 	public static void main(String[] args) {
 		Aplicacion miAplicacion = new Aplicacion();
@@ -39,62 +35,38 @@ public class Aplicacion {
 	}
 
 	private void iniciar() {
-		// Cargar parametros
-		try {
-			CargarParametros.parametros();
-		} catch (IOException e) {
-			System.err.print("Error al cargar parametros");
-			System.exit(-1);
-		}
-
-		// Cargar datos
-		TreeMap<String, Usuario> usuarios = null;
-
-		List<Relacion> relaciones = null;
-		try {
-			usuarios = Dato.cargarUsuarios(CargarParametros.getArchivoUsuario());
-
-			relaciones = Dato.cargarRelaciones(CargarParametros.getArchivoRelacion(), usuarios);
-
-		} catch (FileNotFoundException e) {
-			System.err.print("Error al cargar archivos de datos");
-			System.exit(-1);
-		}
-
-		calculo = new Calculo(usuarios, relaciones);
-
+		
+		redSocial=new RedSocial();
+		calculo = new Calculo(redSocial.getUsuarios(),redSocial.getRelaciones());
 		coordinador = new Coordinador();
-		dato = new Dato(CargarParametros.getArchivoUsuario(), CargarParametros.getArchivoRelacion());
 		desktopFrame = new DesktopFrame();
 		usuariosForm = new UsuariosForm();
 		usuariosList = new UsuariosList();
 		relacionesForm = new RelacionesForm();
 		relacionesList = new RelacionesList();
-		metodosUsuarioList= new MetodosUsuarioList ();
-		usuariosMetodoForm = new UsuariosMetodoForm();
-		metodosRelacionList = new MetodosRelacionList();
-		
+		usuariosListResult = new UsuariosListResult();
+		usuariosFormConsultas = new UsuariosFormConsultas();
+
 		desktopFrame.setCoordinador(coordinador);
 		usuariosForm.setCoordinador(coordinador);
 		usuariosList.setCoordinador(coordinador);
 		relacionesForm.setCoordinador(coordinador);
 		relacionesList.setCoordinador(coordinador);
-		metodosUsuarioList.setCoordinador(coordinador);
-		usuariosMetodoForm.setCoordinador(coordinador);
-		metodosRelacionList.setCoordinador(coordinador);
+		usuariosListResult.setCoordinador(coordinador);
+		usuariosFormConsultas.setCoordinador(coordinador);
 		
-		
+        coordinador.setRedSocial(redSocial);
 		coordinador.setCalculo(calculo);
-		coordinador.setDato(dato);
 		coordinador.setDesktopFrame(desktopFrame);
 		coordinador.setUsuariosForm(usuariosForm);
 		coordinador.setUsuariosList(usuariosList);
 		coordinador.setRelacionesForm(relacionesForm);
 		coordinador.setRelacionesList(relacionesList);
-		coordinador.setMetodosUsuarioList(metodosUsuarioList);
-		coordinador.setUsuariosMetodoForm(usuariosMetodoForm);
-		coordinador.setMetodosRelacionList(metodosRelacionList);
+		coordinador.setUsuariosListResult(usuariosListResult);
+		coordinador.setUsuariosFormConsultas(usuariosFormConsultas);
 		
+		logger.debug("Iniciando Aplicacion");
+
 		desktopFrame.setVisible(true);
 
 	}

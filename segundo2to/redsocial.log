@@ -1,0 +1,19 @@
+18:27:16,698 DEBUG AConnection:29 - Conexion al archivo
+18:27:16,710  INFO UsuarioAleatorioDAO:59 - Se termino de leer el archivo usuarios 
+18:27:16,715  INFO UsuarioAleatorioDAO:82 - Se termino de cargar la lista de usuarios del archivo 
+18:27:16,719 DEBUG AConnection:29 - Conexion al archivo
+18:27:16,724  INFO UsuarioAleatorioDAO:59 - Se termino de leer el archivo usuarios 
+18:27:16,728  INFO UsuarioAleatorioDAO:82 - Se termino de cargar la lista de usuarios del archivo 
+18:27:16,733  INFO RelacionAleatorioDAO:58 - Se termino de leer el archivo relaciones 
+18:27:16,737  INFO UsuarioAleatorioDAO:59 - Se termino de leer el archivo usuarios 
+18:27:16,742  INFO UsuarioAleatorioDAO:82 - Se termino de cargar la lista de usuarios del archivo 
+18:27:16,745  INFO RelacionAleatorioDAO:82 - Se termino de cargar la lista de relaciones del archivo 
+18:27:16,748 DEBUG Calculo:37 - Cargando grafo
+18:27:16,884 DEBUG DesktopFrame:38 - Cargando panel principal
+18:27:16,934 DEBUG UsuariosForm:71 - Cargando panel de usuarios
+18:27:17,087 DEBUG UsuariosList:41 - Cargando lista de usuarios
+18:27:17,110 DEBUG RelacionesForm:66 - Cargando panel de relaciones
+18:27:17,147 DEBUG RelacionesList:44 - Cargando lista de relaciones
+18:27:17,155 DEBUG UsuariosListResult:30 - Cargando lista de resultados de consultas
+18:27:17,158 DEBUG UsuariosFormConsultas:49 - Cargando panel de consultas de usuarios
+18:27:17,163 DEBUG Aplicacion:68 - Iniciando Aplicacion

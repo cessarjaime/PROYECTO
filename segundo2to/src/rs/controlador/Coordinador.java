@@ -1,26 +1,32 @@
 package rs.controlador;
 
 import java.util.List;
-import java.util.TreeMap;
 
-import rs.logica.Calculo;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
-import rs.datos.Dato;
+import rs.negocio.Calculo;
+import rs.negocio.RedSocial;
 import rs.gui.*;
 
 public class Coordinador {
-
+    private RedSocial redSocial;
 	private Calculo calculo;
-	private Dato dato;
 	private DesktopFrame desktopFrame;
 	private UsuariosForm usuariosForm;
 	private UsuariosList usuariosList;
 	private RelacionesForm relacionesForm;
 	private RelacionesList relacionesList;
-	private MetodosUsuarioList metodosUsuarioList;
-	private UsuariosMetodoForm usuariosMetodoForm;
-	private MetodosRelacionList metodosRelacionList;
+	private UsuariosListResult usuariosListResult;
+	private UsuariosFormConsultas usuariosFormConsultas;
+
+
+	public RedSocial getRedSocial() {
+		return redSocial;
+	}
+
+	public void setRedSocial(RedSocial redSocial) {
+		this.redSocial = redSocial;
+	}
 
 	public Calculo getCalculo() {
 		return calculo;
@@ -28,14 +34,6 @@ public class Coordinador {
 
 	public void setCalculo(Calculo calculo) {
 		this.calculo = calculo;
-	}
-
-	public Dato getDato() {
-		return dato;
-	}
-
-	public void setDato(Dato dato) {
-		this.dato = dato;
 	}
 
 	public DesktopFrame getDesktopFrame() {
@@ -78,68 +76,72 @@ public class Coordinador {
 		this.relacionesList = relacionesList;
 	}
 
-
-	public MetodosUsuarioList getMetodosUsuarioList() {
-		return metodosUsuarioList;
+	public UsuariosListResult getUsuariosListResult() {
+		return usuariosListResult;
 	}
 
-	public void setMetodosUsuarioList(MetodosUsuarioList metodosUsuarioList) {
-		this.metodosUsuarioList = metodosUsuarioList;
+	public void setUsuariosListResult(UsuariosListResult usuariosListResult) {
+		this.usuariosListResult = usuariosListResult;
 	}
 
-	public UsuariosMetodoForm getUsuariosMetodoForm() {
-		return usuariosMetodoForm;
+	public UsuariosFormConsultas getUsuariosFormConsultas() {
+		return usuariosFormConsultas;
 	}
 
-	public void setUsuariosMetodoForm(UsuariosMetodoForm usuariosMetodoForm) {
-		this.usuariosMetodoForm = usuariosMetodoForm;
+	public void setUsuariosFormConsultas(UsuariosFormConsultas usuariosFormConsultas) {
+		this.usuariosFormConsultas = usuariosFormConsultas;
 	}
 
-	public MetodosRelacionList getMetodosRelacionList() {
-		return metodosRelacionList;
-	}
-
-	public void setMetodosRelacionList(MetodosRelacionList metodosRelacionList) {
-		this.metodosRelacionList = metodosRelacionList;
-	}
-
-	public void mostrarInsertarUsuario() {
-		usuariosForm.accion(Constantes.INSERTAR);
-		usuariosForm.setVisible(true);
-	}
-
-	public void insertarUsuario(Usuario usuario) {
-		dato.escribirUsuarios(usuario);
-		calculo.agregarUsuario(usuario);
-		usuariosForm.setVisible(false);
-		usuariosList.addRow(usuario);
-
-	}
-
+	// Usuarios
 	public void verUsuarios() {
 		usuariosList.loadTable();
 		usuariosList.setVisible(true);
 	}
 
-	public void mostrarInsertarRelacion() {
-		relacionesForm.accion(Constantes.INSERTAR);
-		relacionesForm.setVisible(true);
+	public void mostrarInsertarUsuario() {
+		usuariosForm.accion(Constantes.INSERTAR, null);
+		usuariosForm.setVisible(true);
 	}
 
-	public void insertarRelacion(Relacion relacion) {
-		dato.escribirRelaciones(relacion);
-		calculo.agregarRelacion(relacion);
-		relacionesForm.setVisible(false);
-		relacionesList.addRow(relacion);
+	public void insertarUsuario(Usuario usuario) {
+	
+		calculo.agregarUsuario(usuario);
+		redSocial.agregarUsuario(usuario);
+		usuariosForm.setVisible(false);
+		usuariosList.addRow(usuario);
 
 	}
 
-	public void verRelaciones() {
-		relacionesList.loadTable();
-		relacionesList.setVisible(true);
+	public void mostrarModificarUsuario(Usuario usuario) {
+		usuariosForm.accion(Constantes.MODIFICAR, usuario);
+		usuariosForm.setVisible(true);
+	}
+
+	public void modificarUsuario(Usuario usuario) {
+		calculo.modificarVertice(usuario);
+		redSocial.modificarUsuario(usuario);
+		usuariosList.setAccion(Constantes.MODIFICAR);
+		usuariosList.setUsuario(usuario);
+		usuariosForm.setVisible(false);
+	}
+
+	public void mostrarBorrarUsuario(Usuario usuario) {
+		usuariosForm.accion(Constantes.BORRAR, usuario);
+		usuariosForm.setVisible(true);
+	}
+
+	public void borrarUsuario(Usuario usuario) {
+		
+		for(Relacion r: calculo.removerVertice(usuario))
+		      redSocial.borrarRelacion(r);
+		
+		redSocial.borrarUsuario(usuario);
+		usuariosList.setAccion(Constantes.BORRAR);
+		usuariosForm.setVisible(false);
 	}
 
 	public void cancelarUsuario() {
+		usuariosList.setAccion(Constantes.CANCELAR);
 		usuariosForm.setVisible(false);
 	}
 
@@ -147,25 +149,92 @@ public class Coordinador {
 		return calculo.buscarVertice(id);
 	}
 
-	public void cancelarRelacion() {
+	public List<Usuario> listaUsuarios() {
+		return calculo.getUsuarios();
+	}
+
+	// relaciones
+	public void verRelaciones() {
+		relacionesList.loadTable();
+		relacionesList.setVisible(true);
+	}
+
+	public void mostrarInsertarRelacion() {
+		relacionesForm.accion(Constantes.INSERTAR, null);
+		relacionesForm.setVisible(true);
+	}
+
+	public void insertarRelacion(Relacion relacion) {
+
+		calculo.agregarRelacion(relacion);
+		redSocial.agregarRelacion(relacion);
+		relacionesForm.setVisible(false);
+		relacionesList.addRow(relacion);
+
+	}
+
+	public void mostrarModifcarRelacion(Relacion relacion) {
+		relacionesForm.accion(Constantes.MODIFICAR, relacion);
+		relacionesForm.setVisible(true);
+	}
+
+	public void modifcarRelacion(Relacion relacion) {
+		calculo.modificarArco(relacion);
+		redSocial.modificarRelacion(relacion);
+		relacionesList.setAccion(Constantes.MODIFICAR);
+		relacionesList.setRelacion(relacion);
 		relacionesForm.setVisible(false);
 	}
 
-	public List<Usuario> listaUsuarios() {
-		return calculo.getUsuarios();
+	public void mostrarBorrarRelacion(Relacion relacion) {
+		relacionesForm.accion(Constantes.BORRAR, relacion);
+		relacionesForm.setVisible(true);
+	}
+
+	public void borrarRelacion(Relacion relacion) {
+		calculo.removerArco(relacion);
+		redSocial.borrarRelacion(relacion);
+		relacionesList.setAccion(Constantes.BORRAR);
+		relacionesForm.setVisible(false);
+	}
+
+	public void cancelarRelacion() {
+		relacionesList.setAccion(Constantes.CANCELAR);
+		relacionesForm.setVisible(false);
+	}
+
+	public Relacion buscarRelacion(Relacion relacion) {
+		return calculo.bucarArco(relacion);
 	}
 
 	public List<Relacion> listaRelacion() {
 		return calculo.getArcos();
 	}
 
-	public double mostrarGradoPromedio() {
-		return calculo.gradoPromedio();
+	public boolean verificarRelacion(Relacion relacion) {
+		return calculo.getArcos().contains(relacion);
 	}
 
+	// UsuariosListResult
 	public void losMetodosUsuarioList(Usuario u, String id1, String id2, int opcion) {
-		metodosUsuarioList.loadTable(u, id1, id2, opcion);
-		metodosUsuarioList.setVisible(true);
+		usuariosListResult.loadTable(u, id1, id2, opcion);
+		usuariosListResult.setVisible(true);
+	}
+
+	// UsuariosFormConsultas
+	public void mostrarCaminoUsuarios(int opcion) {
+		usuariosFormConsultas.accion(opcion);
+		usuariosFormConsultas.setVisible(true);
+	}
+
+	public void cancelarCaminoUsuarios() {
+		usuariosFormConsultas.setVisible(false);
+	}
+
+	// consultas
+
+	public double mostrarGradoPromedio() {
+		return calculo.gradoPromedio();
 	}
 
 	public List<Usuario> listaInfluyentes() {
@@ -176,7 +245,7 @@ public class Coordinador {
 		return calculo.caminoMasNuevo(id1, id2);
 	}
 
-	public int mostrarTiempoAmistad(Usuario u1, Usuario u2) {
+	public Relacion mostrarTiempoAmistad(Usuario u1, Usuario u2) {
 		return calculo.tiempoDeAmistad(u1, u2);
 	}
 
@@ -192,25 +261,20 @@ public class Coordinador {
 		return calculo.masInfluyente();
 	}
 
-	public void mostrarCaminoUsuarios(int opcion) {
-		usuariosMetodoForm.accion(opcion);
-		usuariosMetodoForm.setVisible(true);
+	public List<Usuario> usuarioMasdensos() {
+		return calculo.usuariosQueMasInteractuan();
 	}
 
-	public void cancelarCaminoUsuarios() {
-		usuariosMetodoForm.setVisible(false);
-	}
-	public void losMetodosRelacionList() {
-		metodosRelacionList.loadTable();
-		metodosRelacionList.setVisible(true);
-	}
-	public TreeMap <String,Usuario> relacionMasdensa(){
-		return calculo.usuariosQueMasInteractúanEntreSi();	
-	}
-	public Usuario mostrarSugerenciaDeAmitad(Usuario u) {
+	public List<Usuario> mostrarSugerenciasDeAmitad(Usuario u) {
 		return calculo.sugerenciaNuevaAmistad(u);
 	}
+
 	public Usuario mostrarElQueMasInteractua() {
-		return calculo.usuarioQueMasIteractuaEnRedes();	
+		return calculo.usuarioQueMasIteractuaEnRedes();
 	}
+
+	public int mostrarInteraccionTotal(Usuario usuario) {
+		return calculo.totalInteraccionesUsuarios(usuario);
+	}
+
 }
