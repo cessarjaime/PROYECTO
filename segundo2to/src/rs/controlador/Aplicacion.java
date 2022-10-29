@@ -66,7 +66,7 @@ public class Aplicacion {
 		coordinador.setUsuariosFormConsultas(usuariosFormConsultas);
 		
 		logger.debug("Iniciando Aplicacion");
-
+		
 		desktopFrame.setVisible(true);
 
 	}
