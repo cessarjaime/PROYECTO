@@ -68,6 +68,8 @@ public class Aplicacion {
 		logger.debug("Iniciando Aplicacion");
 		
 		desktopFrame.setVisible(true);
+		
+		
 
 	}
 
