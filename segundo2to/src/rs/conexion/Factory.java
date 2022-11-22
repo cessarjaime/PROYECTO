@@ -3,8 +3,10 @@ package rs.conexion;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 public class Factory {
-	
+	final static Logger logger = Logger.getLogger(Factory.class);
 	private static Hashtable<String, Object> instancias = new Hashtable<String, Object>();
 
 	public static Object getInstancia(String objName) {
@@ -18,7 +20,7 @@ public class Factory {
 				String sClassname = rb.getString(objName);
 				obj = Class.forName(sClassname).newInstance();
 				// agrego el objeto a la hashtable
-				instancias.put(objName, obj);
+				logger.debug(obj);
 			}
 			return obj;
 		} catch (Exception ex) {

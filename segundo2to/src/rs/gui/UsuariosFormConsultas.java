@@ -1,12 +1,17 @@
 package rs.gui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,29 +19,34 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
+import rs.controlador.Constantes;
 import rs.controlador.Coordinador;
 import rs.modelo.Gender;
 import rs.modelo.Usuario;
 import rs.util.Validation;
 
 public class UsuariosFormConsultas extends JDialog {
-	
+
 	final static Logger logger = Logger.getLogger(UsuariosFormConsultas.class);
 	private Coordinador coordinador;
 	private int opcion;
+	private String nombre;
 	private JPanel contentPane;
+	private JProgressBar progressBar;
 	private String jtfId;
 	private String jtfId2;
 
 	private JLabel lblErrorId;
 	private JLabel lblErrorId2;
+	private JLabel lblEspera;
 
-	private JButton btnInsertar;
+	private JButton btnConsultar;
 	private JButton btnCancelar;
 
 	private JLabel lblId;
@@ -46,15 +56,25 @@ public class UsuariosFormConsultas extends JDialog {
 	private JComboBox usuariosJComboBox;
 	private JComboBox usuarios2JComboBox;
 
+	private Usuario u1;
+	private Usuario u2;
+	private ConsultasHilo consultasHilo;
+	private ExecutorService ejecutor = Executors.newCachedThreadPool();
+
 	public UsuariosFormConsultas() {
-        logger.debug("Cargando panel de consultas de usuarios");
-		setBounds(450, 150, 500, 250);
+		logger.debug("Cargando panel de consultas de usuarios");
+		setBounds(450, 150, 500, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		lblId = new JLabel("Id usuario 1:");
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setBounds(90, 200, 230, 35);
+		progressBar.setStringPainted(true);
+
+		lblId = new JLabel("Id usuario  :");
 		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblId.setBounds(42, 30, 107, 14);
 		contentPane.add(lblId);
@@ -63,7 +83,6 @@ public class UsuariosFormConsultas extends JDialog {
 		lblId2.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblId2.setBounds(42, 84, 107, 14);
 		contentPane.add(lblId2);
-
 
 		lblErrorId = new JLabel("");
 		lblErrorId.setForeground(Color.RED);
@@ -77,41 +96,50 @@ public class UsuariosFormConsultas extends JDialog {
 
 		Handler handler = new Handler();
 
-		btnInsertar = new JButton("Buscar");
-		btnInsertar.setBounds(85, 130, 114, 32); // 202
-		contentPane.add(btnInsertar);
-		btnInsertar.addActionListener(handler);
+		btnConsultar = new JButton("Consultar");
+		btnConsultar.setBounds(85, 130, 114, 32); // 202
+		contentPane.add(btnConsultar);
+		btnConsultar.addActionListener(handler);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setBounds(225, 130, 114, 32);
 		contentPane.add(btnCancelar);
 		btnCancelar.addActionListener(handler);
 
-		setModal(true);
-		usuariosJComboBox = new JComboBox();
-		usuarios2JComboBox = new JComboBox();
-		add(usuariosJComboBox);
-		add(usuarios2JComboBox);
+		lblEspera = new JLabel("");
+		lblEspera.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblEspera.setBounds(90, 180, 300, 14);
+		contentPane.add(lblEspera);
+
+		setModal(false);
+
+		contentPane.add(progressBar);
 	}
 
-	public void accion(int opcion) {
+	public void accion(int opcion, String nombre) {
 
+		setTitle(nombre);
+		this.nombre = nombre;
 		this.opcion = opcion;
+		setCursor(null);
+		lblId.setVisible(true);
 		lblId2.setVisible(true);
 
-		btnInsertar.setVisible(true);
-
-		remove(usuariosJComboBox);
-		remove(usuarios2JComboBox);
+		lblEspera.setText("");
+		progressBar.setVisible(false);
+		btnConsultar.setEnabled(true);
 		cargarUsuarios();
 		jtfId = usuarios[0];
 		jtfId2 = usuarios[0];
-		usuariosJComboBox = new JComboBox(usuarios); // set up JComboBox
+
+		if (usuariosJComboBox != null)
+			remove(usuariosJComboBox);
+
+		usuariosJComboBox = new JComboBox(usuarios);
 		usuariosJComboBox.setMaximumRowCount(10);
 		usuariosJComboBox.setBounds(150, 25, 100, 30);
-		usuariosJComboBox.addItemListener(new ItemListener() // anonymous inner class
-		{
-			// handle JComboBox event
+		usuariosJComboBox.addItemListener(new ItemListener() {
+
 			public void itemStateChanged(ItemEvent event) {
 
 				if (event.getStateChange() == ItemEvent.SELECTED) {
@@ -119,12 +147,15 @@ public class UsuariosFormConsultas extends JDialog {
 				}
 			}
 		});
-		usuarios2JComboBox = new JComboBox(usuarios); // set up JComboBox
+
+		if (usuarios2JComboBox != null)
+			remove(usuarios2JComboBox);
+
+		usuarios2JComboBox = new JComboBox(usuarios);
 		usuarios2JComboBox.setMaximumRowCount(10);
 		usuarios2JComboBox.setBounds(150, 75, 100, 30);
-		usuarios2JComboBox.addItemListener(new ItemListener() // anonymous inner class
-		{
-			// handle JComboBox event
+		usuarios2JComboBox.addItemListener(new ItemListener() {
+
 			public void itemStateChanged(ItemEvent event) {
 
 				if (event.getStateChange() == ItemEvent.SELECTED) {
@@ -133,17 +164,26 @@ public class UsuariosFormConsultas extends JDialog {
 			}
 		});
 
-		if (opcion == 5 || opcion == 7) {
+		if (opcion == Constantes.AMIGOS_DE || opcion == Constantes.SUGERENCIA_AMISTAD) {
+			lblId2.setVisible(false);
+			usuarios2JComboBox.setVisible(false);
+
+		}
+		if (opcion == Constantes.GRADO_PROMEDIO || opcion == Constantes.MAS_INFLUYENTES || opcion == Constantes.DENSIDAD
+				|| opcion == Constantes.MAS_INTERACTUA) {
+			lblId.setVisible(false);
+			usuariosJComboBox.setVisible(false);
 			lblId2.setVisible(false);
 			usuarios2JComboBox.setVisible(false);
 		}
+
 		add(usuariosJComboBox);
 		add(usuarios2JComboBox);
 
 	}
 
 	private void cargarUsuarios() {
-		usuarios=new String[coordinador.listaUsuarios().size()];
+		usuarios = new String[coordinador.listaUsuarios().size()];
 		int i = 0;
 		for (Usuario u : coordinador.listaUsuarios()) {
 			usuarios[i] = u.getId();
@@ -151,48 +191,131 @@ public class UsuariosFormConsultas extends JDialog {
 		}
 	}
 
-	private class Handler implements ActionListener {
+	private class Handler implements ActionListener, PropertyChangeListener {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == btnCancelar) {
-				coordinador.cancelarCaminoUsuarios();
-				return;
+				if (consultasHilo != null)
+					consultasHilo.cancel(true);
+
+				coordinador.cancelarConsultasUsuarios(estaClase());
+
 			}
 
-			Usuario u1 = coordinador.buscarUsuario(jtfId);
+			u1 = coordinador.buscarUsuario(new Usuario(jtfId, null, null, null, null, null, null));
 
-			Usuario u2 = coordinador.buscarUsuario(jtfId2);
+			u2 = coordinador.buscarUsuario(new Usuario(jtfId2, null, null, null, null, null, null));
 
-			if (event.getSource() == btnInsertar)
-				switch (opcion) {
-				case 3:
-					coordinador.losMetodosUsuarioList(null, jtfId, jtfId2, 3);
-					break;
-				case 4:
-					if (coordinador.mostrarTiempoAmistad(u1, u2) == null)
-						JOptionPane.showMessageDialog(null, u1.getNombre() + " y " + u2.getNombre() + " no son amigos");
-					else {
-						JOptionPane.showMessageDialog(null,
-								"La relacion entre " + u1.getNombre() + " y " + u2.getNombre() + " es:\n"
-										+ "Tiempo de Amistad="
-										+ coordinador.mostrarTiempoAmistad(u1, u2).getTiempoAmistad() + "\nLikes="
-										+ coordinador.mostrarTiempoAmistad(u1, u2).getLikes() + "\nInteraccion="
-										+ coordinador.mostrarTiempoAmistad(u1, u2).getInteraccion());
-					}
-					break;
-				case 5:
-					coordinador.losMetodosUsuarioList(u1, null, null, 5);
-					break;
-				case 7:
-					coordinador.losMetodosUsuarioList(u1, null, null, 7);
-				}
+			if (event.getSource() == btnConsultar) {
+				lblEspera.setText("Calculando...");
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				consultasHilo = new ConsultasHilo(100, coordinador, estaClase());
+				consultasHilo.addPropertyChangeListener(this);
+				ejecutor.execute(consultasHilo);
+				progressBar.setVisible(true);
+				btnConsultar.setEnabled(false);
+			}
+
+		}
+
+		/**
+		 * Invoked when task's progress property changes.
+		 */
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+
+			if ("progress" == evt.getPropertyName()) {
+				int progress = (Integer) evt.getNewValue();
+				progressBar.setValue(progress);
+
+			}
 
 		}
 
 	}
 
+	public void mostrarConsulta() {
+
+		switch (opcion) {
+		case Constantes.GRADO_PROMEDIO:
+			JOptionPane.showMessageDialog(null, "El grado promedio es:\n" + coordinador.mostrarGradoPromedio());
+			break;
+		case Constantes.MAS_INFLUYENTES:
+			coordinador.losMetodosUsuarioList(null, null, null, Constantes.MAS_INFLUYENTES);
+			break;
+		case Constantes.CAMINO_MAS_NUEVO:
+			if (!coordinador.listaUsuarios().contains(u1) || !coordinador.listaUsuarios().contains(u2)) {
+				JOptionPane.showMessageDialog(null, "Se actualizaron los datos");
+				accion(opcion, nombre);
+			} else {
+
+				if (coordinador.listaCaminoMasNuevo(jtfId, jtfId2) == null) {
+					JOptionPane.showMessageDialog(null, "No existe un camino entre " + jtfId + " y " + jtfId2);
+				}
+
+				else {
+					coordinador.losMetodosUsuarioList(null, jtfId, jtfId2, Constantes.CAMINO_MAS_NUEVO);
+				}
+			}
+			break;
+		case Constantes.TIEMPO_AMISTAD:
+			if (!coordinador.listaUsuarios().contains(u1) || !coordinador.listaUsuarios().contains(u2)) {
+				JOptionPane.showMessageDialog(null, "Se actualizaron los datos");
+
+				accion(opcion, nombre);
+			} else {
+				if (coordinador.mostrarTiempoAmistad(u1, u2) == null)
+					JOptionPane.showMessageDialog(null, u1.getNombre() + " y " + u2.getNombre() + " no son amigos");
+				else {
+					JOptionPane.showMessageDialog(null,
+							"La relación entre " + u1.getNombre() + " y " + u2.getNombre() + " es:\n"
+									+ "Tiempo de Amistad=" + coordinador.mostrarTiempoAmistad(u1, u2).getTiempoAmistad()
+									+ " años" + "\nLikes=" + coordinador.mostrarTiempoAmistad(u1, u2).getLikes()
+									+ "\nInteracción=" + coordinador.mostrarTiempoAmistad(u1, u2).getInteraccion()
+									+ " horas promedio al dia");
+				}
+			}
+			break;
+		case Constantes.AMIGOS_DE:
+			if (!coordinador.listaUsuarios().contains(u1)) {
+				JOptionPane.showMessageDialog(null, "Se actualizaron los datos");
+				accion(opcion, nombre);
+			} else {
+				coordinador.losMetodosUsuarioList(u1, null, null, Constantes.AMIGOS_DE);
+			}
+
+			break;
+		case Constantes.DENSIDAD:
+			coordinador.losMetodosUsuarioList(null, null, null, Constantes.DENSIDAD);
+			break;
+		case Constantes.SUGERENCIA_AMISTAD:
+			if (!coordinador.listaUsuarios().contains(u1)) {
+				JOptionPane.showMessageDialog(null, "Se actualizaron los datos");
+				accion(opcion, nombre);
+			} else {
+				coordinador.losMetodosUsuarioList(u1, null, null, Constantes.SUGERENCIA_AMISTAD);
+			}
+
+			break;
+		case Constantes.MAS_INTERACTUA:
+			JOptionPane.showMessageDialog(null,
+					"El usuario que mas interactua en la red es el\n" + coordinador.mostrarElQueMasInteractua());
+			break;
+		}
+		setCursor(null);
+		lblEspera.setText("");
+		progressBar.setVisible(false);
+		progressBar.setValue(0);
+		btnConsultar.setEnabled(true);
+	}
+
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
+	}
+
+	private UsuariosFormConsultas estaClase() {
+
+		return this;
 	}
 
 }

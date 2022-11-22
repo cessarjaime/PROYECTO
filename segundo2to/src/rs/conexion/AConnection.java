@@ -32,7 +32,7 @@ public class AConnection {
 			return file;
 		} catch (IOException ex) {
 			ex.printStackTrace();
-		       logger.error("Error al crear la conexion");
+		     logger.error("Error al crear la conexion");
 			throw new RuntimeException("Error al crear la conexion", ex);
 		}
 	}

@@ -8,8 +8,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -96,7 +94,7 @@ public class UsuariosForm extends JDialog {
 		contentPane.add(jtfNombre);
 		jtfNombre.setColumns(10);
 
-		JLabel lblGenero = new JLabel("Genero:");
+		JLabel lblGenero = new JLabel("Género:");
 		lblGenero.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblGenero.setBounds(42, 91, 107, 14);
 		contentPane.add(lblGenero);
@@ -169,7 +167,7 @@ public class UsuariosForm extends JDialog {
 		});
 		contentPane.add(estadoCivilJComboBox);
 
-		JLabel lblNivelAcademico = new JLabel("Nivel Academico:");
+		JLabel lblNivelAcademico = new JLabel("Nivel Académico:");
 		lblNivelAcademico.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNivelAcademico.setBounds(42, 242, 107, 14);
 		contentPane.add(lblNivelAcademico);
@@ -270,7 +268,7 @@ public class UsuariosForm extends JDialog {
 
 		if (accion == Constantes.INSERTAR) {
 			btnInsertar.setVisible(true);
-
+			calendario.setDate(Validation.isDate(LocalDate.now().toString(), "yyyy-MM-dd"));
 		}
 
 		if (accion == Constantes.MODIFICAR) {
@@ -332,7 +330,7 @@ public class UsuariosForm extends JDialog {
 				coordinador.cancelarUsuario();
 
 			if (event.getSource() == btnBorrar) {
-				int resp = JOptionPane.showConfirmDialog(null, "Est� seguro que borra este registro?", "Confirmar",
+				int resp = JOptionPane.showConfirmDialog(null, "Estás seguro de borrar este registro?", "Confirmar",
 						JOptionPane.YES_NO_OPTION);
 				if (JOptionPane.OK_OPTION == resp) {
 					
@@ -357,7 +355,7 @@ public class UsuariosForm extends JDialog {
 				lblErrorNombre.setText("Campo obligatorio");
 				valido = false;
 			} else if (nombre.matches("[A-Z][a-zA-Z]*") != true) {
-				lblErrorNombre.setText("Solo letras. Primera con may�scula");
+				lblErrorNombre.setText("Solo letras. Primera con mayúscula");
 				valido = false;
 			}
 
@@ -374,7 +372,7 @@ public class UsuariosForm extends JDialog {
 			// validar ciudad
 			String ciudad = jtfCiudad.getText();
 			if (ciudad.isEmpty()) {
-				lblErrorCiudad.setText("Ciudad no v�lido");
+				lblErrorCiudad.setText("Ciudad no válido");
 				valido = false;
 			}
 
@@ -391,18 +389,17 @@ public class UsuariosForm extends JDialog {
 			}
 
 			if (!valido) {
-				logger.error("Campos no v�lidos!");
+				logger.error("Campos no válidos!");
 				return;
 			}
 			Usuario usuario = new Usuario(id, nombre, generoG, ciudad, fechaNacimiento, estadoCivil, nivelAcademico);
 			if (event.getSource() == btnInsertar) {
-				if (coordinador.buscarUsuario(id) != null) {
+				if (coordinador.buscarUsuario(usuario) != null) {
 					lblErrorId.setText("Este id ya existe");
 					logger.error("Este usuario ya existe");
 
 				} else {
 					coordinador.insertarUsuario(usuario);
-					JOptionPane.showMessageDialog(null, "Usuario agregado");
 					logger.info("Se agrego el usuario:"+id+" al frame");
 				}
 			}

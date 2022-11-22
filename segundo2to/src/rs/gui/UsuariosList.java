@@ -3,8 +3,6 @@ package rs.gui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-
 import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -31,6 +29,7 @@ public class UsuariosList extends JDialog {
 	private Coordinador coordinador;
 	private int accion;
 	private JPanel contentPane;
+	private JButton btnInsertar;
 	private JScrollPane scrollPane;
 	private JTable tableUsuarios;
 	private Usuario usuario;
@@ -46,13 +45,17 @@ public class UsuariosList extends JDialog {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		btnInsertar = new JButton("Insertar");
+		btnInsertar.setBounds(38, 395, 114, 32);
+		contentPane.add(btnInsertar);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(38, 25, 800, 400);
+		scrollPane.setBounds(38, 25, 800, 350);
 		contentPane.add(scrollPane);
 
 		tableUsuarios = new JTable();
-		tableUsuarios.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nombre", "Genero",
+		tableUsuarios.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nombre", "Género",
 				"Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "Modificar", "Borrar" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, true, true };
 
@@ -66,8 +69,16 @@ public class UsuariosList extends JDialog {
 		tableUsuarios.getColumn("Borrar").setCellEditor(new ButtonEditor(new JCheckBox()));
 
 		scrollPane.setViewportView(tableUsuarios);
-		setModal(true);
-
+		Handler handler = new Handler();
+		btnInsertar.addActionListener(handler);
+		setModal(false);
+	}
+	private class Handler implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+		
+			if (event.getSource() == btnInsertar)
+				coordinador.mostrarInsertarUsuario();
+		}
 	}
 
 	public void loadTable() {
@@ -174,6 +185,7 @@ public class UsuariosList extends JDialog {
 			this.table = table;
 			isDeleteRow = false;
 			isUpdateRow = false;
+			
 			return button;
 		}
 
@@ -182,7 +194,7 @@ public class UsuariosList extends JDialog {
 			if (isPushed) {
 				String id = tableUsuarios.getValueAt(tableUsuarios.getSelectedRow(), 0).toString();
 				
-				Usuario usu = coordinador.buscarUsuario(id);
+				Usuario usu = coordinador.buscarUsuario(new Usuario(id,null,null,null,null,null,null));
 				if (label.equals("edit"))
 					coordinador.mostrarModificarUsuario(usu);
 				else

@@ -8,7 +8,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -91,7 +90,7 @@ public class RelacionesForm extends JDialog {
 		contentPane.add(jtfId2);
 		jtfId2.setColumns(10);
 
-		JLabel lblInterracion = new JLabel("Interracion diaria:");
+		JLabel lblInterracion = new JLabel("Interacción diaria:");
 		lblInterracion.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblInterracion.setBounds(42, 135, 120, 14);
 		contentPane.add(lblInterracion);
@@ -197,6 +196,7 @@ public class RelacionesForm extends JDialog {
 			jtfId1.setVisible(false);
 			jtfId2.setVisible(false);
 			cargarComboBox();
+			calendario.setDate(Validation.isDate(LocalDate.now().toString(), "yyyy-MM-dd"));
 		}
 		if (accion == Constantes.MODIFICAR) {
 			btnModificar.setVisible(true);
@@ -286,7 +286,7 @@ public class RelacionesForm extends JDialog {
 				coordinador.cancelarRelacion();;
 
 			if (event.getSource() == btnBorrar) {
-				int resp = JOptionPane.showConfirmDialog(null, "Est� seguro que borra este registro?", "Confirmar",
+				int resp = JOptionPane.showConfirmDialog(null, "Estás seguro de borrar este registro?", "Confirmar",
 						JOptionPane.YES_NO_OPTION);
 				if (JOptionPane.OK_OPTION == resp) {
 					coordinador.borrarRelacion(
@@ -303,14 +303,14 @@ public class RelacionesForm extends JDialog {
 			// validar interaccion
 			int interaccion = Validation.isInteger(jtfInteraccion.getText().trim());
 			if (interaccion == -1) {
-				lblErrorInteraccion.setText("Interracion no valido");
+				lblErrorInteraccion.setText("Interacción no válido");
 				valido = false;
 			}
 
 			// validar likes
 			int likes = Validation.isInteger(jtfLikes.getText());
 			if (likes == -1) {
-				lblErrorLikes.setText("Likes no valido");
+				lblErrorLikes.setText("Likes no válido");
 				valido = false;
 			}
 
@@ -328,26 +328,31 @@ public class RelacionesForm extends JDialog {
 
 
 			if (!valido) {
-				logger.error("Campos no v�lidos!");
+				logger.error("Campos no válidos!");
 				return;
 			}
 			
 			if (event.getSource() == btnInsertar) {
-				Usuario u1 = coordinador.buscarUsuario(jtfId1C);
-				Usuario u2 = coordinador.buscarUsuario(jtfId2C);
+				Usuario u1 = coordinador.buscarUsuario(new Usuario(jtfId1C,null,null,null,null,null,null));
+				Usuario u2 = coordinador.buscarUsuario(new Usuario(jtfId2C,null,null,null,null,null,null));
 				Relacion r = new Relacion(u1, u2, interaccion, likes, tiempo);
-				if (coordinador.verificarRelacion(r)) {
-					JOptionPane.showMessageDialog(null, "esta relacion ya existe");
+				if(u1.equals(u2)) {
+					JOptionPane.showMessageDialog(null, "Relación invalida:Los dos usuarios son iguales");
+					logger.error("relacion invalida los dos usuarios son iguales");
+					return;
+				}
+				
+				if (coordinador.buscarRelacion(r)!=null) {
+					JOptionPane.showMessageDialog(null, "Esta relación ya existe");
 					logger.error("Esta relacion ya existe");
 				} else {
 					coordinador.insertarRelacion(r);
-					JOptionPane.showMessageDialog(null, "Relacion agregado");
 					logger.info("se agrego la relacion:"+jtfId1C+" y "+jtfId2C +" al frame");
 				}
 			}
 			if (event.getSource() == btnModificar) {
-				Relacion r = new Relacion(coordinador.buscarUsuario(jtfId1.getText()),
-						coordinador.buscarUsuario(jtfId2.getText()), interaccion, likes, tiempo);
+				Relacion r = new Relacion(coordinador.buscarUsuario(new Usuario(jtfId1.getText(),null,null,null,null,null,null)),
+						coordinador.buscarUsuario(new Usuario(jtfId2.getText(),null,null,null,null,null,null)), interaccion, likes, tiempo);
 				coordinador.modifcarRelacion(r);
 				logger.info("Se modifico la relacion:"+jtfId1+" y "+jtfId2+" del frame");
 			}

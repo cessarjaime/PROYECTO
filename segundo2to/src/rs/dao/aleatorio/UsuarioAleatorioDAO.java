@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import rs.conexion.AConnection;
-import rs.dao.RelacionDAO;
+
 import rs.dao.UsuarioDAO;
 import rs.modelo.Gender;
 import rs.modelo.Usuario;
@@ -58,7 +58,6 @@ public class UsuarioAleatorioDAO implements UsuarioDAO {
 				}
 			} catch (EOFException e) {
 				logger.info("Se termino de leer el archivo usuarios ");
-				return;
 			} catch (IOException e) {
 				logger.error("Error al leer el archivo usuarios");
 			}

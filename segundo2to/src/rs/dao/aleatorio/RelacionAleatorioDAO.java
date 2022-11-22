@@ -4,14 +4,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import rs.conexion.AConnection;
-import rs.controlador.Aplicacion;
+import rs.conexion.Factory;
 import rs.dao.RelacionDAO;
 import rs.dao.UsuarioDAO;
 import rs.modelo.Relacion;
@@ -57,7 +57,7 @@ public class RelacionAleatorioDAO implements RelacionDAO {
 				}
 			} catch (EOFException e) {
 				logger.info("Se termino de leer el archivo relaciones ");
-				return;
+				
 			} catch (IOException e) {
 				logger.error("Error al leer el archivo relaciones");
 			}
@@ -155,7 +155,7 @@ public class RelacionAleatorioDAO implements RelacionDAO {
 
 	private Hashtable<String, Usuario> cargarUsuarios() {
 		Hashtable<String, Usuario> lusuarios = new Hashtable<>();
-		UsuarioAleatorioDAO usuarioDAO = new UsuarioAleatorioDAO();
+		UsuarioDAO usuarioDAO = (UsuarioDAO) Factory.getInstancia("USUARIOS");
 		List<Usuario> us = usuarioDAO.buscarTodos();
 		for (Usuario u : us) 
 			lusuarios.put(u.getId(), u);

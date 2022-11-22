@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.List;
@@ -12,12 +12,17 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import rs.dao.UsuarioDAO;
+import rs.dao.aleatorio.RelacionAleatorioDAO;
 import rs.modelo.Gender;
 import rs.modelo.Usuario;
 
 public class UsuarioSecuencialDAO implements UsuarioDAO {
-
+	
+	final static Logger logger = Logger.getLogger(UsuarioSecuencialDAO.class);
+	
 	private List<Usuario> list;
 	private String name;
 
@@ -27,16 +32,16 @@ public class UsuarioSecuencialDAO implements UsuarioDAO {
 		name = rb.getString("usuarios");
 		list = readFromFile(name);
 	}
-
+     
 	private List<Usuario> readFromFile(String file) {
+
 		List<Usuario> list = new ArrayList<>();
 		Scanner inFile = null;
 		try {
 			inFile = new Scanner(new File(file));
 			inFile.useDelimiter("\\s*,\\s*");
 			while (inFile.hasNext()) {
-				Usuario u = new Usuario();
-			
+				Usuario u = new Usuario();			
 				u.setId(inFile.next());			
 				u.setNombre(inFile.next());
 				u.setGenero(Gender.valueOf(inFile.next()));
@@ -48,13 +53,14 @@ public class UsuarioSecuencialDAO implements UsuarioDAO {
 				list.add(u);
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
-			System.err.println("Error opening file.");
+			
+			logger.error("Error opening file.");
 			fileNotFoundException.printStackTrace();
 		} catch (NoSuchElementException noSuchElementException) {
-			System.err.println("Error in file record structure");
+			logger.error("Error in file record structure");
 			noSuchElementException.printStackTrace();
 		} catch (IllegalStateException illegalStateException) {
-			System.err.println("Error reading from file.");
+			logger.error("Error reading from file.");
 			illegalStateException.printStackTrace();
 		} finally {
 			if (inFile != null)
@@ -73,9 +79,9 @@ public class UsuarioSecuencialDAO implements UsuarioDAO {
 						u.getEstadoCivil(),u.getNivelAcademico());
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
-			System.err.println("Error creating file.");
+			logger.error("Error creating file.");
 		} catch (FormatterClosedException formatterClosedException) {
-			System.err.println("Error writing to file.");
+			logger.error("Error writing to file.");
 		} finally {
 			if (outFile != null)
 				outFile.close();
@@ -89,8 +95,10 @@ public class UsuarioSecuencialDAO implements UsuarioDAO {
 
 	@Override
 	public void insertar(Usuario usuario) {
-		list.add(usuario);
-		writeToFile(list, name);
+		if(!list.contains(usuario)) {
+		    list.add(usuario);
+		    writeToFile(list, name);
+		}
 	}
 
 	@Override

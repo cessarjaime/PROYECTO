@@ -3,7 +3,6 @@ package rs.gui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
@@ -23,8 +22,6 @@ import org.apache.log4j.Logger;
 
 import rs.controlador.Constantes;
 import rs.controlador.Coordinador;
-import rs.gui.UsuariosList.ButtonEditor;
-import rs.gui.UsuariosList.ButtonRenderer;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
 
@@ -34,6 +31,7 @@ public class RelacionesList extends JDialog {
 	private Coordinador coordinador;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
+	private JButton btnInsertar;
 	private JTable tableRelaciones;
 	private int accion;
 	private Relacion relacion;
@@ -43,12 +41,16 @@ public class RelacionesList extends JDialog {
 	 */
 	public RelacionesList() {
         logger.debug("Cargando lista de relaciones");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(275, 125, 850, 450);
+        
+		setBounds(275, 125, 850, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		btnInsertar = new JButton("Insertar");
+		btnInsertar.setBounds(38, 400, 114, 32);
+		contentPane.add(btnInsertar);
 
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(38, 25, 750, 350);
@@ -56,7 +58,7 @@ public class RelacionesList extends JDialog {
 
 		tableRelaciones = new JTable();
 		tableRelaciones.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Nombre", "Id1", "Nombre",
-				"Id2", "Interaccion", "Likes", "FechaDeA.", "Modificar", "Borrar" }) {
+				"Id2", "Interacción", "Likes", "FechaDeA.", "Modificar", "Borrar" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, true, true };
 
 			public boolean isCellEditable(int row, int column) {
@@ -69,13 +71,22 @@ public class RelacionesList extends JDialog {
 		tableRelaciones.getColumn("Borrar").setCellEditor(new ButtonEditor(new JCheckBox()));
 
 		scrollPane.setViewportView(tableRelaciones);
-		setModal(true);
+		Handler handler = new Handler();
+		btnInsertar.addActionListener(handler);
+		setModal(false);
 
+	}
+	private class Handler implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+		
+			if (event.getSource() == btnInsertar)
+				coordinador.mostrarInsertarRelacion();
+		}
 	}
 
 	public void loadTable() {
 		((DefaultTableModel) tableRelaciones.getModel()).setRowCount(0);
-		for (Relacion r : coordinador.listaRelacion())
+		for (Relacion r : coordinador.listaRelaciones())
 			addRow(r);
 	}
 

@@ -2,9 +2,6 @@ package rs.test;
 
 import static org.junit.Assert.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -17,9 +14,10 @@ import rs.modelo.Relacion;
 import rs.modelo.Usuario;
 import rs.negocio.Calculo;
 import rs.negocio.RedSocial;
+import rs.negocio.Subject;
 
 public class TestRedesSociales {
-	
+	private Subject subject;
 	private Calculo calculo;
 	private RedSocial redSocial;
 	private Usuario u1;
@@ -34,11 +32,12 @@ public class TestRedesSociales {
 	@Before
 	public void setUp() throws Exception {
 		
-    //El text se prueba con el archivo secuencial se cambia en factory.properties
-		redSocial=new RedSocial();
-		calculo = new Calculo(redSocial.getUsuarios(),redSocial.getRelaciones());
+    //Se debe cambiar el archivo secuencial.properties con los archivos para test
+		subject = new Subject();
+		redSocial=new RedSocial(subject);
+		calculo = new Calculo(subject,redSocial.getUsuarios(),redSocial.getRelaciones());
 		usuarios=new TreeMap<String, Usuario>();
-		for(Usuario u:calculo.getUsuarios())
+		for(Usuario u:redSocial.getUsuarios())
 			usuarios.put(u.getId(), u);
 
 		u1 = usuarios.get("juan");
@@ -55,17 +54,6 @@ public class TestRedesSociales {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void usuariosCargados() {
-		TreeMap<String, Usuario> cargados = usuarios;
-		assertTrue(cargados.containsValue(u1) && u1.getId().equals("juan"));
-		assertTrue(cargados.containsValue(u2) && u2.getId().equals("marcos"));
-		assertTrue(cargados.containsValue(u3) && u3.getId().equals("lucas"));
-		assertTrue(cargados.containsValue(u4) && u4.getId().equals("maria"));
-		assertTrue(cargados.containsValue(u5) && u5.getId().equals("ana"));
-		assertTrue(cargados.containsValue(u6) && u6.getId().equals("luis"));
-		assertTrue(cargados.containsValue(u7) && u7.getId().equals("micaela"));
-	}
 
 	@Test
 	public void testAmigosDe() {

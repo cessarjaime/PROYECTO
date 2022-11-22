@@ -77,21 +77,6 @@ public class Coordinador {
 		this.relacionesList = relacionesList;
 	}
 
-	public UsuariosListResult getUsuariosListResult() {
-		return usuariosListResult;
-	}
-
-	public void setUsuariosListResult(UsuariosListResult usuariosListResult) {
-		this.usuariosListResult = usuariosListResult;
-	}
-
-	public UsuariosFormConsultas getUsuariosFormConsultas() {
-		return usuariosFormConsultas;
-	}
-
-	public void setUsuariosFormConsultas(UsuariosFormConsultas usuariosFormConsultas) {
-		this.usuariosFormConsultas = usuariosFormConsultas;
-	}
 
 	// Usuarios
 	public void verUsuarios() {
@@ -106,7 +91,6 @@ public class Coordinador {
 
 	public void insertarUsuario(Usuario usuario) {
 	
-		calculo.agregarUsuario(usuario);
 		redSocial.agregarUsuario(usuario);
 		usuariosForm.setVisible(false);
 		usuariosList.addRow(usuario);
@@ -119,7 +103,7 @@ public class Coordinador {
 	}
 
 	public void modificarUsuario(Usuario usuario) {
-		calculo.modificarVertice(usuario);
+		
 		redSocial.modificarUsuario(usuario);
 		usuariosList.setAccion(Constantes.MODIFICAR);
 		usuariosList.setUsuario(usuario);
@@ -133,9 +117,6 @@ public class Coordinador {
 
 	public void borrarUsuario(Usuario usuario) {
 		
-		for(Relacion r: calculo.removerVertice(usuario))
-		      redSocial.borrarRelacion(r);
-		
 		redSocial.borrarUsuario(usuario);
 		usuariosList.setAccion(Constantes.BORRAR);
 		usuariosForm.setVisible(false);
@@ -146,12 +127,12 @@ public class Coordinador {
 		usuariosForm.setVisible(false);
 	}
 
-	public Usuario buscarUsuario(String id) {
-		return calculo.buscarVertice(id);
+	public Usuario buscarUsuario(Usuario usuario) {
+		return redSocial.buscarUsuario(usuario);
 	}
 
 	public List<Usuario> listaUsuarios() {
-		return calculo.getUsuarios();
+		return redSocial.getUsuarios();
 	}
 
 	// relaciones
@@ -167,7 +148,7 @@ public class Coordinador {
 
 	public void insertarRelacion(Relacion relacion) {
 
-		calculo.agregarRelacion(relacion);
+		
 		redSocial.agregarRelacion(relacion);
 		relacionesForm.setVisible(false);
 		relacionesList.addRow(relacion);
@@ -180,7 +161,7 @@ public class Coordinador {
 	}
 
 	public void modifcarRelacion(Relacion relacion) {
-		calculo.modificarArco(relacion);
+		
 		redSocial.modificarRelacion(relacion);
 		relacionesList.setAccion(Constantes.MODIFICAR);
 		relacionesList.setRelacion(relacion);
@@ -193,7 +174,7 @@ public class Coordinador {
 	}
 
 	public void borrarRelacion(Relacion relacion) {
-		calculo.removerArco(relacion);
+		
 		redSocial.borrarRelacion(relacion);
 		relacionesList.setAccion(Constantes.BORRAR);
 		relacionesForm.setVisible(false);
@@ -205,31 +186,35 @@ public class Coordinador {
 	}
 
 	public Relacion buscarRelacion(Relacion relacion) {
-		return calculo.bucarArco(relacion);
+		return redSocial.buscarRelacion(relacion);
 	}
 
-	public List<Relacion> listaRelacion() {
-		return calculo.getArcos();
+	public List<Relacion> listaRelaciones() {
+		return redSocial.getRelaciones();
 	}
 
-	public boolean verificarRelacion(Relacion relacion) {
-		return calculo.getArcos().contains(relacion);
-	}
 
 	// UsuariosListResult
 	public void losMetodosUsuarioList(Usuario u, String id1, String id2, int opcion) {
+		usuariosListResult= new UsuariosListResult();   //abrir varios resultados 
+		usuariosListResult.setCoordinador(this);
 		usuariosListResult.loadTable(u, id1, id2, opcion);
 		usuariosListResult.setVisible(true);
 	}
 
 	// UsuariosFormConsultas
-	public void mostrarCaminoUsuarios(int opcion) {
-		usuariosFormConsultas.accion(opcion);
+	public void mostrarConsultasUsuarios(int opcion,String nombre) {
+		usuariosFormConsultas=new UsuariosFormConsultas();//realizar mismas consultas o diferentes en simultaneo
+		usuariosFormConsultas.setCoordinador(this);
+		usuariosFormConsultas.accion(opcion,nombre);
 		usuariosFormConsultas.setVisible(true);
 	}
 
-	public void cancelarCaminoUsuarios() {
+	public void cancelarConsultasUsuarios(UsuariosFormConsultas usuariosFormConsultas) {
 		usuariosFormConsultas.setVisible(false);
+	}
+	public void realizarConsulta(UsuariosFormConsultas usuariosFormConsultas) {
+		usuariosFormConsultas.mostrarConsulta();
 	}
 
 	// consultas
@@ -266,6 +251,7 @@ public class Coordinador {
 		return calculo.usuariosQueMasInteractuan();
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<Usuario> mostrarSugerenciasDeAmitad(Usuario u) {
 		return calculo.sugerenciaNuevaAmistad(u);
 	}

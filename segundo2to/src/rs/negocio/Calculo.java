@@ -16,26 +16,28 @@ import net.datastructures.Graph;
 import net.datastructures.GraphAlgorithms;
 import net.datastructures.PositionalList;
 import net.datastructures.Vertex;
-import rs.conexion.AConnection;
+import rs.controlador.Coordinador;
 import rs.modelo.Relacion;
 import rs.modelo.Usuario;
-import rs.servicio.RelacionService;
-import rs.servicio.RelacionServiceImpl;
-import rs.servicio.UsuarioService;
-import rs.servicio.UsuarioServiceImpl;
 import rs.util.Calendario;
 
-public class Calculo {
-	
+public class Calculo implements Observer {
+
 	final static Logger logger = Logger.getLogger(Calculo.class);
 	private Graph<Usuario, Relacion> redSocial;
 	private TreeMap<String, Vertex<Usuario>> vertices;
-	private List<Edge<Relacion>> arcos;
-	private UsuarioService usuarioService;
-	private RelacionService relacionService;
+	private List<Relacion> arcos;
+	private Coordinador coordinador;
+	private Subject subject;
+	private boolean actualizar;
 
-	public Calculo(List<Usuario> usuarios,List<Relacion> relaciones) {
-      logger.debug("Cargando grafo");
+	public Calculo(Subject subject, List<Usuario> usuarios, List<Relacion> relaciones) {
+		logger.debug("Cargando grafo");
+
+		this.subject = subject;
+		this.subject.attach(this);
+		this.actualizar = false;
+
 		redSocial = new AdjacencyMapGraph<>(false);
 
 		// Cargar usuarios
@@ -45,91 +47,11 @@ public class Calculo {
 			vertices.put(u.getId(), redSocial.insertVertex(u));
 
 		// Cargar relaciones
-		arcos = new ArrayList<>();
+		arcos = relaciones;
 
-		for (Relacion rel : relaciones)
-			arcos.add(redSocial.insertEdge(vertices.get(rel.getUsuario1().getId()),
-					vertices.get(rel.getUsuario2().getId()), rel));
+		for (Relacion rel : arcos)
+			redSocial.insertEdge(vertices.get(rel.getUsuario1().getId()), vertices.get(rel.getUsuario2().getId()), rel);
 
-	}
-
-	/** agrega usuario como vertice del grafo */
-	public void agregarUsuario(Usuario usuario) {
-		vertices.put(usuario.getId(), redSocial.insertVertex(usuario));
-        logger.info("Se agrego el usuario "+ usuario.getId()+" al  grafo");
-	
-	}
-
-	/** agrega relacion como arco del grafo */
-	public void agregarRelacion(Relacion relacion) {
-		arcos.add(redSocial.insertEdge(vertices.get(relacion.getUsuario1().getId()),
-				vertices.get(relacion.getUsuario2().getId()), relacion));
-		logger.info("Se agrego la relacion "+ relacion.getUsuario1().getId() 
-				+" y "+relacion.getUsuario2().getId()+" al grafo");
-	}
-
-	public void modificarVertice(Usuario u) {
-		Usuario usuario = vertices.get(u.getId()).getElement();
-		usuario.setNombre(u.getNombre());
-		usuario.setGenero(u.getGenero());
-		usuario.setCiudad(u.getCiudad());
-		usuario.setFechaNacimiento(u.getFechaNacimiento());
-		usuario.setEstadoCivil(u.getEstadoCivil());
-		usuario.setNivelAcademico(u.getNivelAcademico());
-		logger.info("Se modifico el usuario "+ usuario.getId()+" del  grafo");
-	
-	}
-
-	public void modificarArco(Relacion r) {
-		Relacion relacion = arcos.get(buscarArcoIndice(r)).getElement();
-		relacion.setInteraccion(r.getInteraccion());
-		relacion.setLikes(r.getLikes());
-		relacion.setFechaAmistad(r.getFechaAmistad());
-		
-		logger.info("Se modifico la relacion "+ relacion.getUsuario1().getId() 
-				+" y "+relacion.getUsuario2().getId()+" del grafo");
-
-	}
-
-	public List<Relacion> removerVertice(Usuario u) {
-		List<Relacion> relacionesDelete=new ArrayList<>();
-		for (Edge<Relacion> r : redSocial.incomingEdges(vertices.get(u.getId()))) {
-	
-			removerArco(r.getElement());
-			relacionesDelete.add(r.getElement());
-
-		}
-		vertices.remove(u.getId());
-		logger.info("Se borro el usuario "+ u.getId()+" del  grafo");
-		volverCargarGrafo(getUsuarios(), getArcos());
-		// redSocial.removeVertex(vertices.get(u.getId()));
-		
-		return relacionesDelete;
-	}
-
-	public void removerArco(Relacion r) {
-		arcos.remove(buscarArcoIndice(r));
-		logger.info("Se borro la relacion "+ r.getUsuario1().getId() 
-				+" y "+r.getUsuario2().getId()+" del grafo");
-		volverCargarGrafo(getUsuarios(), getArcos());
-		// redSocial.removeEdge(arcos.remove(buscarArcoIndice(r)));
-	}
-
-	/** retorna una lista con todos los usuarios */
-	public List<Usuario> getUsuarios() {
-		List<Usuario> usuarios = new ArrayList<>();
-		for (Entry<String, Vertex<Usuario>> vert : vertices.entrySet())
-			usuarios.add(vert.getValue().getElement());
-
-		return usuarios;
-	}
-
-	/** retorna una lista con todas las relaciones */
-	public List<Relacion> getArcos() {
-		List<Relacion> relaciones = new ArrayList<>();
-		for (Edge<Relacion> r : arcos)
-			relaciones.add(r.getElement());
-		return relaciones;
 	}
 
 	/** retorna el grafo */
@@ -137,21 +59,11 @@ public class Calculo {
 		return redSocial;
 	}
 
-	/** retorna un usuario a partir del id de usuario */
-	public Usuario buscarVertice(String id) {
-		if (vertices.get(id) == null)
-			return null;
-		return vertices.get(id).getElement();
-	}
-
-	public Relacion bucarArco(Relacion relacion) {
-		return arcos.get(buscarArcoIndice(relacion)).getElement();
-	}
-
 	// Consultas
 
 	/** Muestra un listado de los amigos de un usuario */
 	public List<Usuario> amigosDe(Usuario u) {
+		realizarCalculo();
 		List<Usuario> amigos = new ArrayList<Usuario>();
 		Vertex<Usuario> v = vertices.get(u.getId());
 
@@ -167,6 +79,7 @@ public class Calculo {
 
 	/** tiempo de amistad entre dos usuarios */
 	public Relacion tiempoDeAmistad(Usuario u1, Usuario u2) {
+		realizarCalculo();
 		Edge<Relacion> arcoAmistad = redSocial.getEdge(vertices.get(u1.getId()), vertices.get(u2.getId()));
 		if (arcoAmistad == null)
 			return null;
@@ -176,7 +89,7 @@ public class Calculo {
 
 	/** Listado de los usuarios en orden del más influyente al menos */
 	public List<Usuario> masInfluyentes() {
-
+		realizarCalculo();
 		List<Usuario> influyentes = new ArrayList<Usuario>(redSocial.numVertices());
 		List<Usuario> l;
 		TreeMap<Integer, List<Usuario>> mapInf = new TreeMap<>();
@@ -200,6 +113,8 @@ public class Calculo {
 
 	/** Usuario más influyente */
 	public Usuario masInfluyente() {
+		
+		realizarCalculo();
 		Usuario influyente = vertices.firstEntry().getValue().getElement();
 		for (Vertex<Usuario> v : vertices.values()) {
 			if (this.cantidadAmigos(influyente) < this.cantidadAmigos(v.getElement()))
@@ -210,6 +125,7 @@ public class Calculo {
 
 	/** usuarios que más interactuan */
 	public List<Usuario> usuariosQueMasInteractuan() {
+		realizarCalculo();
 		TreeMap<String, Integer> usuariosIdInteracciones = new TreeMap<String, Integer>();
 		for (Vertex<Usuario> usersVertices : redSocial.vertices()) {
 			usuariosIdInteracciones.put(usersVertices.getElement().getId(),
@@ -221,6 +137,7 @@ public class Calculo {
 
 	/** total de interacciones de un usuario */
 	public int totalInteraccionesUsuarios(Usuario u) {
+		realizarCalculo();
 		int interacciones = 0;
 		for (Edge<Relacion> arcosRelaciones : redSocial.incomingEdges(vertices.get(u.getId()))) {
 			interacciones = arcosRelaciones.getElement().getInteraccion() + interacciones;
@@ -230,6 +147,7 @@ public class Calculo {
 
 	/** Usuario que más interactúa en las redes sociales */
 	public Usuario usuarioQueMasIteractuaEnRedes() {
+		realizarCalculo();
 		Usuario vicio = null;
 		int maximoEnRedes = 0;
 		for (Vertex<Usuario> verticeVicio : redSocial.vertices()) {
@@ -247,17 +165,23 @@ public class Calculo {
 
 	/** Camino más nuevo entre dos usuarios */
 	public List<Usuario> caminoMasNuevo(String id, String id1) {
+		realizarCalculo();
+		PositionalList<Vertex<Usuario>> c = null;
 		Graph<Usuario, Integer> g = new AdjacencyMapGraph<>(false);
 		TreeMap<String, Vertex<Usuario>> verticesC = new TreeMap<>();
 
 		for (Entry<String, Vertex<Usuario>> usr : vertices.entrySet())
 			verticesC.put(usr.getKey(), g.insertVertex(usr.getValue().getElement()));
 
-		for (Relacion rel : getArcos())
+		for (Relacion rel : arcos)
 			g.insertEdge(verticesC.get(rel.getUsuario1().getId()), verticesC.get(rel.getUsuario2().getId()),
 					Calendario.getTiempo(rel.getFechaAmistad()));
-
-		PositionalList<Vertex<Usuario>> c = GraphAlgorithms.shortestPathList(g, verticesC.get(id), verticesC.get(id1));
+		try {
+			c = GraphAlgorithms.shortestPathList(g, verticesC.get(id), verticesC.get(id1));
+		} catch (IllegalArgumentException e) {
+			logger.error("no existe un camino entre " + id + " y " + id1);
+			return null;
+		}
 
 		List<Usuario> camino = new ArrayList<>(c.size());
 		for (Vertex<Usuario> v : c)
@@ -266,9 +190,10 @@ public class Calculo {
 		return camino;
 
 	}
-
-	/** Sugerencias de nueva amistad */
+	/** @deprecated
+	  Sugerencias de nueva amistad */
 	public List<Usuario> sugerenciaNuevaAmistad(Usuario usuario) {
+		realizarCalculo();
 		List<Usuario> sugerenciasNuevasAmistad = new ArrayList<Usuario>();
 		Vertex<Usuario> verticeUsuario = vertices.get(usuario.getId());
 		List<Vertex<Usuario>> sugeridos = new ArrayList<Vertex<Usuario>>();
@@ -295,6 +220,7 @@ public class Calculo {
 
 	/** Devuelve el grado promedio */
 	public double gradoPromedio() {
+		realizarCalculo();
 		if (redSocial.numEdges() == 0)
 			return redSocial.numEdges();
 
@@ -305,6 +231,7 @@ public class Calculo {
 
 	/** Cantidad de amigos de un usuario */
 	public int cantidadAmigos(Usuario u) {
+		realizarCalculo();
 		Vertex<Usuario> v = vertices.get(u.getId());
 		return redSocial.inDegree(v);
 	}
@@ -321,14 +248,6 @@ public class Calculo {
 			}
 		}
 		return sugeridos;
-	}
-
-	private int buscarArcoIndice(Relacion r) {
-		for (int i = 0; i < arcos.size(); i++)
-			if (arcos.get(i).getElement().equals(r))
-				return i;
-		return -1;
-
 	}
 
 	/** ordena los usuarios por interacciones */
@@ -380,10 +299,29 @@ public class Calculo {
 		for (Usuario u : usuarios)
 			vertices.put(u.getId(), redSocial.insertVertex(u));
 
-		arcos.clear();
-		for (Relacion r : relaciones)
-			arcos.add(redSocial.insertEdge(vertices.get(r.getUsuario1().getId()), vertices.get(r.getUsuario2().getId()),
-					r));
+		arcos = relaciones;
+
+		for (Relacion r : arcos)
+			redSocial.insertEdge(vertices.get(r.getUsuario1().getId()), vertices.get(r.getUsuario2().getId()), r);
+	}
+
+	private void realizarCalculo() {
+     
+		if (actualizar) {
+			volverCargarGrafo(coordinador.listaUsuarios(), coordinador.listaRelaciones());
+			actualizar = false;
+			logger.info("Se actualizaron los datos para realizar calculos");
+		} else
+			logger.info("No se actualizaron los datos");
+	}
+
+	public void setCoordinador(Coordinador coordinador) {
+		this.coordinador = coordinador;
+	}
+
+	@Override
+	public void update() {
+		actualizar = true;
 	}
 
 }

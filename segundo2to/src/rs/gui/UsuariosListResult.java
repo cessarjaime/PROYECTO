@@ -15,11 +15,12 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
 
+import rs.controlador.Constantes;
 import rs.controlador.Coordinador;
 import rs.modelo.Usuario;
 
 public class UsuariosListResult extends JDialog {
-	
+
 	final static Logger logger = Logger.getLogger(UsuariosListResult.class);
 	private Coordinador coordinador;
 	private JPanel contentPane;
@@ -29,8 +30,8 @@ public class UsuariosListResult extends JDialog {
 
 	public UsuariosListResult() {
 		logger.debug("Cargando lista de resultados de consultas");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 756, 366);
+	
+		setBounds(300, 175, 756, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -42,32 +43,37 @@ public class UsuariosListResult extends JDialog {
 		contentPane.add(lblUsuario);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(38, 45, 673, 600);
+		scrollPane.setBounds(38, 45, 673, 300);
 		contentPane.add(scrollPane);
 
 		tableUsuariosMetodos = new JTable();
+		tableUsuariosMetodos.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "ID", "Nombre", "Género", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad." }));
 
 		scrollPane.setViewportView(tableUsuariosMetodos);
-		setModal(true);
 
+		tableUsuariosMetodos.setEnabled(false);
 	}
 
 	public void loadTable(Usuario usu, String id1, String id2, int opcion) {
 		((DefaultTableModel) tableUsuariosMetodos.getModel()).setRowCount(0);
 		switch (opcion) {
-		case 2:
-			modeloDeTabla(2);
-			lblUsuario.setText("Los mas influyentes de mayor a menor");
+		case Constantes.MAS_INFLUYENTES:
+			modeloDeTabla(Constantes.MAS_INFLUYENTES);
 
 			for (Usuario u : coordinador.listaInfluyentes())
 				addRow(u, Integer.toString(coordinador.mostrarCantidadAmigos(u)));
 
 			break;
-		case 3:
-			modeloDeTabla(3);
-			lblUsuario.setText("El camino mas nuevo entre " + coordinador.buscarUsuario(id1).getNombre() + " y "
-					+ coordinador.buscarUsuario(id2).getNombre() + " es ");
+		case Constantes.CAMINO_MAS_NUEVO:
+			modeloDeTabla(Constantes.CAMINO_MAS_NUEVO);
+			lblUsuario.setText("El camino más nuevo entre "
+					+ coordinador.buscarUsuario(new Usuario(id1, null, null, null, null, null, null)).getNombre()
+					+ " y "
+					+ coordinador.buscarUsuario(new Usuario(id2, null, null, null, null, null, null)).getNombre()
+					+ " es ");
 			List<Usuario> u1 = coordinador.listaCaminoMasNuevo(id1, id2);
+
 			addRow(u1.get(0), "  ");
 
 			for (int i = 1; i < u1.size(); i++)
@@ -75,8 +81,7 @@ public class UsuariosListResult extends JDialog {
 						Integer.toString(coordinador.mostrarTiempoAmistad(u1.get(i), u1.get(i - 1)).getTiempoAmistad())
 								+ " años");
 			break;
-		case 5:
-			modeloDeTabla(5);
+		case Constantes.AMIGOS_DE:
 			lblUsuario.setText(
 					"Cantidad de amigos de " + usu.getNombre() + " son " + coordinador.listaDeAmigos(usu).size());
 
@@ -84,16 +89,15 @@ public class UsuariosListResult extends JDialog {
 				addRow(u, null);
 
 			break;
-		case 6:
-			modeloDeTabla(6);
-			lblUsuario.setText("Usuarios con mas tiempo de interaccion de mayor a menor");
+		case Constantes.DENSIDAD:
+			modeloDeTabla(Constantes.DENSIDAD);
+			lblUsuario.setText("Usuarios con mas tiempo de interacción de mayor a menor");
 
 			for (Usuario u : coordinador.usuarioMasdensos())
 				addRow(u, Integer.toString(coordinador.mostrarInteraccionTotal(u)));
 
 			break;
-		case 7:
-			modeloDeTabla(7);
+		case Constantes.SUGERENCIA_AMISTAD:
 			lblUsuario.setText("Sugerencias de amistad de " + usu.getNombre());
 
 			for (Usuario u : coordinador.mostrarSugerenciasDeAmitad(usu))
@@ -103,7 +107,6 @@ public class UsuariosListResult extends JDialog {
 		}
 
 	}
-
 
 	public void addRow(Usuario usu, String t) {
 		Object[] row = new Object[tableUsuariosMetodos.getModel().getColumnCount()];
@@ -124,28 +127,25 @@ public class UsuariosListResult extends JDialog {
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}
-	
+
 	private void modeloDeTabla(int opcion) {
 		switch (opcion) {
-		case 2:
+		case Constantes.MAS_INFLUYENTES:
+			lblUsuario.setText("Los más influyentes de mayor a menor");
 			tableUsuariosMetodos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nombre",
-					"Genero", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "Cant.Amigos" }));
+					"Género", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "Cant.Amigos" }));
 			break;
-		case 3:
+		case Constantes.CAMINO_MAS_NUEVO:
 			tableUsuariosMetodos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nombre",
-					"Genero", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "T.Amistad" }));
+					"Género", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "T.Amistad" }));
 
 			break;
-		case 5, 7:
-			tableUsuariosMetodos.setModel(new DefaultTableModel(new Object[][] {},
-					new String[] { "ID", "Nombre", "Genero", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad." }));
-			break;
-		case 6:
+		case Constantes.DENSIDAD:
 			tableUsuariosMetodos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nombre",
-					"Genero", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "T.Interaccion" }));
+					"Género", "Ciudad", "fechaDeN.", "EstadoCiv.", "NivelAcad.", "T.Interacción" }));
 			break;
+
 		}
-
 	}
 
 }

@@ -13,49 +13,33 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
-import rs.conexion.AConnection;
 import rs.controlador.Coordinador;
 
 public class DesktopFrame extends JFrame {
-	
+
 	final static Logger logger = Logger.getLogger(DesktopFrame.class);
-	
+
 	private JComboBox metodosJComboBox;
-	private String metodos[] = { "    ", "Grado Promedio", "Los mas influyentes", "El camino mas nuevo",
-			"Tiempo de amistad", "Amigos de", "Densidad", "Sugerencia de Amistad", "El que mas interactúa" };
+	private String metodos[] = { "    ", "Grado Promedio", "Los más influyentes", "El camino más nuevo",
+			"Tiempo de amistad", "Amigos de", "Densidad", "Sugerencia de Amistad", "El que más interactúa" };
 	private Coordinador coordinador;
-	private JMenuItem mntmNewMenuItem_1;
-	private JMenuItem mntmNewMenuItem_2;
 	private JMenuItem mntmNewMenuItem1;
 	private JMenuItem mntmNewMenuItem2;
 
+
 	public DesktopFrame() {
-		
-     logger.debug("Cargando panel principal");
+
+		logger.debug("Cargando panel principal");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
-		JMenu mnNewMenu_1 = new JMenu("Insertar");
-		menuBar.add(mnNewMenu_1);
-
 		Handler handler = new Handler();
-
-		mntmNewMenuItem_1 = new JMenuItem("Usuarios");
-		mntmNewMenuItem_1.addActionListener(handler);
-
-		mnNewMenu_1.add(mntmNewMenuItem_1);
-
-		mntmNewMenuItem_2 = new JMenuItem("Relaciones");
-		mntmNewMenuItem_2.addActionListener(handler);
-
-		mnNewMenu_1.add(mntmNewMenuItem_2);
 
 		JMenu mnNewMenu = new JMenu("Ver");
 		menuBar.add(mnNewMenu);
@@ -73,7 +57,6 @@ public class DesktopFrame extends JFrame {
 		Fondo fondo = new Fondo();
 		setContentPane(fondo);
 
-		setBounds(100, 100, 650, 600);
 		setSize(600, 480);
 		setTitle("Red Social");
 		setLocationRelativeTo(null);
@@ -82,60 +65,26 @@ public class DesktopFrame extends JFrame {
 
 		JLabel lblFun = new JLabel("FUNCIONALIDADES");
 		lblFun.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblFun.setBounds(175, 50, 200, 50);
+		lblFun.setBounds(175, 50, 250, 50);
 		add(lblFun);
 
-		metodosJComboBox = new JComboBox(metodos); // set up JComboBox
-		metodosJComboBox.setMaximumRowCount(8); // display three rows
+		metodosJComboBox = new JComboBox(metodos);
+		metodosJComboBox.setMaximumRowCount(8);
 		metodosJComboBox.setBounds(185, 100, 175, 30);
-		metodosJComboBox.addItemListener(new ItemListener() // anonymous inner class
-		{
-			// handle JComboBox event
+		metodosJComboBox.addItemListener(new ItemListener() {
+			
 			public void itemStateChanged(ItemEvent event) {
 
-				if (event.getStateChange() == ItemEvent.SELECTED) {
+				if (event.getStateChange() == ItemEvent.SELECTED && metodosJComboBox.getSelectedIndex()!=0) {
 
-					switch (metodosJComboBox.getSelectedIndex()) {
-					case 1:
-						JOptionPane.showMessageDialog(null,
-								"El grado promedio es:\n" + coordinador.mostrarGradoPromedio());
-						break;
-					case 2:
-						coordinador.losMetodosUsuarioList(null, null, null, 2);
-						break;
-					case 3:
-						coordinador.mostrarCaminoUsuarios(3);
+				    coordinador.mostrarConsultasUsuarios(metodosJComboBox.getSelectedIndex(), metodos[metodosJComboBox.getSelectedIndex()]);
 
-						break;
-					case 4:
-						coordinador.mostrarCaminoUsuarios(4);
-
-						break;
-					case 5:
-
-						coordinador.mostrarCaminoUsuarios(5);
-
-						break;
-
-					case 6:
-						coordinador.losMetodosUsuarioList(null, null, null, 6);
-						break;
-					case 7:
-						coordinador.mostrarCaminoUsuarios(7);
-
-						break;
-					case 8:
-						JOptionPane.showMessageDialog(null, "El usuario que mas interactua en la red es el\n"
-								+ coordinador.mostrarElQueMasInteractua());
-						break;
-					}
-
-					metodosJComboBox.setSelectedIndex(0);
+				    metodosJComboBox.setSelectedIndex(0);
 				}
+				
 			}
 
-		} // end anonymous inner class
-		); // end call to addItemListener
+		});
 
 		add(metodosJComboBox);
 
@@ -143,12 +92,6 @@ public class DesktopFrame extends JFrame {
 
 	private class Handler implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
-
-			if (event.getSource() == mntmNewMenuItem_1)
-				coordinador.mostrarInsertarUsuario();
-
-			if (event.getSource() == mntmNewMenuItem_2)
-				coordinador.mostrarInsertarRelacion();
 
 			if (event.getSource() == mntmNewMenuItem1)
 				coordinador.verUsuarios();
