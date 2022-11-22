@@ -251,7 +251,6 @@ public class Coordinador {
 		return calculo.usuariosQueMasInteractuan();
 	}
 
-	@SuppressWarnings("deprecation")
 	public List<Usuario> mostrarSugerenciasDeAmitad(Usuario u) {
 		return calculo.sugerenciaNuevaAmistad(u);
 	}

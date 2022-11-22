@@ -190,7 +190,7 @@ public class Calculo implements Observer {
 		return camino;
 
 	}
-	/** @deprecated
+	/**
 	  Sugerencias de nueva amistad */
 	public List<Usuario> sugerenciaNuevaAmistad(Usuario usuario) {
 		realizarCalculo();
