@@ -12,6 +12,11 @@ import rs.servicio.RelacionServiceImpl;
 import rs.servicio.UsuarioService;
 import rs.servicio.UsuarioServiceImpl;
 
+/**
+ * Clase gestion de la red social
+ * @author Camacho, Cristian; Jaime, Cesar
+ *
+ */
 public class RedSocial {
 	
 	final static Logger logger = Logger.getLogger(RedSocial.class);
@@ -21,6 +26,10 @@ public class RedSocial {
 	private List<Relacion> relaciones;
 	private Subject subject;
 
+	/**
+	 * Constructor de red social
+	 * @param subject observador
+	 */
 	public RedSocial(Subject subject) {
 		this.subject=subject;
 		usuarios = new ArrayList<>();
@@ -31,6 +40,10 @@ public class RedSocial {
 		relaciones.addAll(relacionService.buscarTodos());
 	}
 
+	/**
+	 * agrega usuario a la red
+	 * @param usuario
+	 */
 	public void agregarUsuario(Usuario usuario) {
 		usuarioService.insertar(usuario);
 		usuarios.add(usuario);
@@ -38,6 +51,10 @@ public class RedSocial {
 		logger.info("Se agrego el usuario "+ usuario.getId()+" al archivo");
 	}
 
+	/**
+	 * agrega relacion a la red
+	 * @param relacion
+	 */
 	public void agregarRelacion(Relacion relacion) {
 		relacionService.insertar(relacion);
 		relaciones.add(relacion);
@@ -46,6 +63,10 @@ public class RedSocial {
 				+" y "+relacion.getUsuario2().getId()+" al archivo");
 	}
 
+	/**
+	 * modifica usuario de la red
+	 * @param usuario
+	 */
 	public void modificarUsuario(Usuario usuario) {
 		usuarioService.actualizar(usuario);
 		usuarios.remove(usuario);
@@ -54,6 +75,10 @@ public class RedSocial {
 		logger.info("Se modifico el usuario "+ usuario.getId()+" del archivo");
 	}
 
+	/**
+	 * modifica relacion de la red
+	 * @param relacion
+	 */
 	public void modificarRelacion(Relacion relacion) {
 		relacionService.actualizar(relacion);
 		relaciones.remove(relacion);
@@ -63,6 +88,10 @@ public class RedSocial {
 				+" y "+relacion.getUsuario2().getId()+" del archivo");
 	}
 
+	/**
+	 * borra usuario de la red
+	 * @param usuario
+	 */
 	public void borrarUsuario(Usuario usuario) {
 		usuarioService.borrar(usuario);
 		
@@ -77,6 +106,10 @@ public class RedSocial {
 		logger.info("Se borro el usuario "+ usuario.getId()+" del archivo");
 	}
 
+	/**
+	 * borra relacion de la red
+	 * @param relacion
+	 */
 	public void borrarRelacion(Relacion relacion) {
 		relacionService.borrar(relacion);
 		relaciones.remove(relacion);
@@ -84,12 +117,24 @@ public class RedSocial {
 		logger.info("Se borro la relacion "+ relacion.getUsuario1().getId() 
 				+" y "+relacion.getUsuario2().getId()+" del archivo");
 	}
+	
+	/**
+	 * busca usuario de la red
+	 * @param usuario
+	 * @return usuario encontrado
+	 */
 	public Usuario buscarUsuario( Usuario usuario) {
 		int pos = usuarios.indexOf(usuario);
 		if (pos == -1)
 			return null;
 		return usuarios.get(pos);
 	}
+	
+	/**
+	 * buscar relacion de la red
+	 * @param relacion
+	 * @return
+	 */
 	public Relacion buscarRelacion( Relacion relacion) {
 		int pos = relaciones.indexOf(relacion);
 		if (pos == -1)
@@ -97,18 +142,34 @@ public class RedSocial {
 		return relaciones.get(pos);
 	}
 
+	/**
+	 * obtiene lista de usuarios
+	 * @return lista de usuarios
+	 */
 	public List<Usuario> getUsuarios() {
 		return usuarios;
 	}
 
+	/**
+	 * establece lista de usuarios
+	 * @param lista de usuarios
+	 */
 	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
 
+	/**
+	 * obtiene lista de relaciones
+	 * @return lista de relaciones
+	 */
 	public List<Relacion> getRelaciones() {
 		return relaciones;
 	}
 
+	/**
+	 * establece lista de relaciones
+	 * @param relaciones lista de relaciones
+	 */
 	public void setRelaciones(List<Relacion> relaciones) {
 		this.relaciones = relaciones;
 	}
